@@ -1,44 +1,32 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
-import AddTransaction from './pages/AddTransaction';
-import Reports from './pages/Reports';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import CreateEvent from './pages/CreateEvent';
+import JoinEvent from './pages/JoinEvent';
+import RideRequests from './pages/RideRequests';
 
 function App() {
   return (
     <Router>
-      <div>
-        {/* Navbar */}
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-          <div className="container-fluid">
-            <Link className="navbar-brand" to="/">Finance Tracker</Link>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-              <ul className="navbar-nav">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/">Dashboard</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/add">Add Transaction</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/reports">Reports</Link>
-                </li>
-              </ul>
-            </div>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div className="container">
+          <Link className="navbar-brand" to="/">Carpool</Link>
+          <div className="collapse navbar-collapse">
+            <ul className="navbar-nav ms-auto">
+              <li className="nav-item"><Link className="nav-link" to="/create">Create Event</Link></li>
+              <li className="nav-item"><Link className="nav-link" to="/join">Join Event</Link></li>
+              <li className="nav-item"><Link className="nav-link" to="/rides">Ride Requests</Link></li>
+            </ul>
           </div>
-        </nav>
-
-        {/* Page Content */}
-        <div className="container mt-4">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/add" element={<AddTransaction />} />
-            <Route path="/reports" element={<Reports />} />
-          </Routes>
         </div>
+      </nav>
+      <div className="container mt-4">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/create" element={<CreateEvent />} />
+          <Route path="/join" element={<JoinEvent />} />
+          <Route path="/rides" element={<RideRequests />} />
+        </Routes>
       </div>
     </Router>
   );
