@@ -2,64 +2,57 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const Ride = require('../models/Ride');
-const User = require('../models/User');
 
-// Create ride (driver)
-router.post('/', auth, async (req, res) => {
-  try {
-    const { origin, destination, originAddress, destinationAddress, dateTime, availableSeats, purpose, price } = req.body;
-    const ride = new Ride({
-      driver: req.user.id,
-      origin,
-      destination,
-      originAddress,
-      destinationAddress,
-      dateTime,
-      availableSeats,
-      purpose,
-      price
-    });
+// POST /api/rides - create ride (driver)
+router.post('/', auth, async (req,res)=>{
+  try{
+    const data = req.body;
+    data.driver = req.user.id;
+    const ride = new Ride(data);
     await ride.save();
-    // broadcast new ride to clients
-    const io = req.app.get('io');
-    io.emit('newRide', ride);
     res.json(ride);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch(err){ console.error(err); res.status(500).send('Server error'); }
 });
 
-// Search rides: simple example: find rides near an origin within radius and time window
-router.get('/search', async (req, res) => {
-  try {
-    const { lat, lng, radius = 5000, start = Date.now(), end = Date.now() + 1000*60*60*24 } = req.query;
-    // find rides whose origin is within radius (meters) of provided point and time between start & end
-    const rides = await Ride.find({
-      origin: {
-        $nearSphere: { $geometry: { type: "Point", coordinates: [ parseFloat(lng), parseFloat(lat) ] }, $maxDistance: parseInt(radius) }
-      },
-      dateTime: { $gte: new Date(parseInt(start)), $lte: new Date(parseInt(end)) }
-    }).populate('driver', 'name car');
-    res.json(rides);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+// GET /api/rides - list rides (with query filters)
+router.get('/', async (req,res)=>{
+  // support ?originLat=&originLng=&destLat=&destLng=&date=&purpose=
+  const filters = {};
+  if(req.query.purpose) filters.purpose = req.query.purpose;
+  // for simplicity return all for now
+  const rides = await Ride.find().populate('driver','name email');
+  res.json(rides);
 });
 
-// Book a seat
-router.post('/:id/book', auth, async (req, res) => {
-  try {
+// POST /api/rides/:id/request - rider requests seat
+router.post('/:id/request', auth, async (req,res)=>{
+  try{
     const ride = await Ride.findById(req.params.id);
-    if (!ride) return res.status(404).json({ msg: 'Ride not found' });
-    if (ride.availableSeats <= 0) return res.status(400).json({ msg: 'No seats' });
-    if (ride.passengers.includes(req.user.id)) return res.status(400).json({ msg: 'Already booked' });
-
-    ride.passengers.push(req.user.id);
-    ride.availableSeats -= 1;
+    if(!ride) return res.status(404).json({ msg: 'Ride not found' });
+    // add request
+    ride.requests.push({ user: req.user.id });
     await ride.save();
+    res.json({ msg: 'Request sent' });
+  } catch(err){ console.error(err); res.status(500).send('Server error'); }
+});
 
-    // notify driver/other passengers via Socket.IO
-    const io = req.app.get('io');
-    io.to(ride._id.toString()).emit('rideUpdated', ride);
-    io.emit('rideUpdated', ride); // also global
+// POST /api/rides/:id/requests/:reqId/respond - driver accepts/rejects
+router.post('/:id/requests/:reqId/respond', auth, async (req,res)=>{
+  try{
+    const { action } = req.body; // 'accept' or 'reject'
+    const ride = await Ride.findById(req.params.id);
+    if(!ride) return res.status(404).json({ msg: 'Ride not found' });
+    if(ride.driver.toString() !== req.user.id) return res.status(403).json({ msg: 'Not authorized' });
+    const r = ride.requests.id(req.params.reqId);
+    if(!r) return res.status(404).json({ msg: 'Request not found' });
+    r.status = action === 'accept' ? 'accepted' : 'rejected';
+    if(r.status === 'accepted'){
+      ride.passengers.push(r.user);
+      ride.seatsAvailable = Math.max(0, ride.seatsAvailable - 1);
+    }
+    await ride.save();
     res.json(ride);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch(err){ console.error(err); res.status(500).send('Server error'); }
 });
 
 module.exports = router;
