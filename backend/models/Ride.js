@@ -1,22 +1,22 @@
 const mongoose = require('mongoose');
 
-const PointSchema = new mongoose.Schema({
-  type: { type: String, enum: ['Point'], default: 'Point' },
-  coordinates: { type: [Number], index: '2dsphere' } // [lng, lat]
+const StopSchema = new mongoose.Schema({
+  name: String,
+  lat: Number,
+  lng: Number
 });
 
 const RideSchema = new mongoose.Schema({
-  driver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  origin: { type: PointSchema, required: true },
-  destination: { type: PointSchema, required: true },
-  originAddress: String,
-  destinationAddress: String,
-  dateTime: { type: Date, required: true },
-  availableSeats: { type: Number, required: true },
+  driver: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  origin: StopSchema,
+  destination: StopSchema,
+  via: [StopSchema],
+  date: Date,
+  time: String,
+  seatsAvailable: Number,
+  pricePerSeat: Number,
+  purpose: { type: String, enum: ['Work','School','Event','Other'], default: 'Other' },
+  requests: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, status: { type: String, enum:['pending','accepted','rejected'], default:'pending' }}],
   passengers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  purpose: { type: String }, // Work, School, Event, Other
-  price: Number,
   createdAt: { type: Date, default: Date.now }
 });
-
-module.exports = mongoose.model('Ride', RideSchema);
