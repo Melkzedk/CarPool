@@ -10,6 +10,9 @@ app.use(express.json());
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/rides', require('./routes/rides'));
+const eventRoutes = require('./routes/events');
+app.use('/api/events', eventRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, ()=>console.log(`Server started on ${PORT}`));
