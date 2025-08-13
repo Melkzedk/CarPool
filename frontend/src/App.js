@@ -5,6 +5,7 @@ import CreateEvent from './pages/CreateEvent';
 import JoinEvent from './pages/JoinEvent';
 import RideRequests from './pages/RideRequests';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { FaPlusCircle, FaSignInAlt, FaCarSide } from 'react-icons/fa';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Link className="navbar-brand fw-bold text-uppercase" to="/">
             🚗 Carpool
           </Link>
+
           {/* Toggler for mobile */}
           <button
             className="navbar-toggler"
@@ -29,20 +31,20 @@ function App() {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
+            <ul className="navbar-nav ms-auto gap-2">
               <li className="nav-item">
-                <Link className="nav-link" to="/create">
-                  Create Event
+                <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/create">
+                  <FaPlusCircle /> Create Ride
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/join">
-                  Join Event
+                <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/join">
+                  <FaSignInAlt /> Join Ride
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/rides">
-                  Ride Requests
+                <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/rides">
+                  <FaCarSide /> Ride Requests
                 </Link>
               </li>
             </ul>
