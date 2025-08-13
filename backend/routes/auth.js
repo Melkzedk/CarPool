@@ -1,41 +1,49 @@
-const express = require('express');
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
-// POST /api/auth/register
-router.post('/register', async (req,res)=>{
-  try{
-    const { name,email,password,role } = req.body;
-    let user = await User.findOne({ email });
-    if(user) return res.status(400).json({ msg: 'User already exists' });
-    user = new User({ name,email,password,role });
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password,salt);
-    await user.save();
-    const payload = { user: { id: user.id } };
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' }, (err,token)=>{
-      if(err) throw err; res.json({ token });
+router.post("/register", async (req, res) => {
+  try {
+    const { name, email, password, role, carModel, licensePlate, drivingLicenseNumber } = req.body;
+
+    // Basic validation
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ error: "All required fields must be filled" });
+    }
+
+    // Role-specific validation
+    if (role === "driver") {
+      if (!carModel || !licensePlate || !drivingLicenseNumber) {
+        return res.status(400).json({ error: "Driver must provide car details and license number" });
+      }
+    }
+
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ error: "Email already registered" });
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      carModel: role === "driver" ? carModel : undefined,
+      licensePlate: role === "driver" ? licensePlate : undefined,
+      drivingLicenseNumber: role === "driver" ? drivingLicenseNumber : undefined
     });
-  } catch(err){
-    console.error(err.message); res.status(500).send('Server error');
+
+    await newUser.save();
+    res.status(201).json({ message: "User registered successfully", user: newUser });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
-});
-
-// POST /api/auth/login
-router.post('/login', async (req,res)=>{
-  try{
-    const { email,password } = req.body;
-    const user = await User.findOne({ email });
-    if(!user) return res.status(400).json({ msg: 'Invalid credentials' });
-    const isMatch = await bcrypt.compare(password,user.password);
-    if(!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
-    const payload = { user: { id: user.id } };
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' }, (err,token)=>{
-      if(err) throw err; res.json({ token });
-    });
-  } catch(err){ console.error(err.message); res.status(500).send('Server error'); }
 });
 
 module.exports = router;
