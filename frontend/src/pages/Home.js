@@ -4,70 +4,52 @@ import "animate.css";
 
 export default function Home() {
   return (
-    <div className="text-center">
-      {/* Hero Section */}
-      <section className="bg-primary text-white py-5 animate__animated animate__fadeIn">
-        <div className="container">
-          <h1 className="display-4 fw-bold">Welcome to Carpool</h1>
-          <p className="lead">
-            Share rides with people attending the same event and save money while helping the environment.
-          </p>
-          <a href="/events" className="btn btn-light btn-lg mt-3 shadow">
-            Find an Event
-          </a>
-        </div>
-      </section>
+    <div
+      className="bg-primary text-white min-vh-100 d-flex flex-column align-items-center justify-content-center text-center animate__animated animate__fadeIn"
+    >
+      <div className="container">
+        <h1 className="display-3 fw-bold">Welcome to Carpool</h1>
+        <p className="lead mb-4">
+          Share rides with people attending the same event and make your journey
+          cheaper, greener, and more fun.
+        </p>
 
-      {/* Features Section */}
-      <section className="container my-5">
-        <div className="row g-4">
-          <div className="col-md-4">
-            <div className="card shadow h-100 animate__animated animate__fadeInUp">
+        <div className="row g-4 justify-content-center">
+          <div className="col-10 col-md-3 animate__animated animate__fadeInUp">
+            <div className="card bg-light text-dark shadow h-100">
               <div className="card-body">
-                <h5 className="card-title fw-bold">Save Costs</h5>
-                <p className="card-text">
-                  Split fuel and parking expenses with fellow event-goers.
-                </p>
+                <h5 className="fw-bold">💰 Save Costs</h5>
+                <p className="mb-0">Split fuel & parking with others.</p>
               </div>
             </div>
           </div>
 
-          <div className="col-md-4">
-            <div className="card shadow h-100 animate__animated animate__fadeInUp animate__delay-1s">
+          <div className="col-10 col-md-3 animate__animated animate__fadeInUp animate__delay-1s">
+            <div className="card bg-light text-dark shadow h-100">
               <div className="card-body">
-                <h5 className="card-title fw-bold">Meet People</h5>
-                <p className="card-text">
-                  Connect with others who share your destination and interests.
-                </p>
+                <h5 className="fw-bold">🤝 Meet People</h5>
+                <p className="mb-0">Connect with fellow event-goers.</p>
               </div>
             </div>
           </div>
 
-          <div className="col-md-4">
-            <div className="card shadow h-100 animate__animated animate__fadeInUp animate__delay-2s">
+          <div className="col-10 col-md-3 animate__animated animate__fadeInUp animate__delay-2s">
+            <div className="card bg-light text-dark shadow h-100">
               <div className="card-body">
-                <h5 className="card-title fw-bold">Eco-Friendly</h5>
-                <p className="card-text">
-                  Reduce carbon emissions by sharing rides instead of driving alone.
-                </p>
+                <h5 className="fw-bold">🌍 Eco-Friendly</h5>
+                <p className="mb-0">Help reduce carbon emissions.</p>
               </div>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Call to Action */}
-      <section className="bg-light py-5 animate__animated animate__fadeInUp">
-        <div className="container">
-          <h2 className="fw-bold">Ready to Start?</h2>
-          <p className="lead">
-            Join our community of ride-sharers and make your next trip better.
-          </p>
-          <a href="/register" className="btn btn-primary btn-lg shadow">
-            Get Started
-          </a>
-        </div>
-      </section>
+        <a
+          href="/events"
+          className="btn btn-light btn-lg mt-5 shadow animate__animated animate__pulse animate__infinite"
+        >
+          🚗 Find an Event
+        </a>
+      </div>
     </div>
   );
 }
