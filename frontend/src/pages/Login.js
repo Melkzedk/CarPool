@@ -20,7 +20,7 @@ export default function Login() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert("Login successful!");
-      navigate("/createevent"); // Redirect after successful login
+      navigate("/create"); // Redirect after successful login
 
     } catch (err) {
       alert(err.response?.data?.error || "Login failed");
