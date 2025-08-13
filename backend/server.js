@@ -1,8 +1,10 @@
+// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+// Initialize app
 const app = express();
 
 // Middleware
@@ -14,13 +16,28 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error(err));
+.then(() => console.log('✅ MongoDB connected'))
+.catch(err => console.error('❌ MongoDB connection error:', err));
+
+// Debug: log every incoming request
+app.use((req, res, next) => {
+  console.log(`➡️  ${req.method} ${req.url}`, req.body);
+  next();
+});
 
 // Routes
 const eventRoutes = require('./routes/events');
-app.use('/api/events', eventRoutes); // MOUNT ROUTE HERE ✅
+const authRoutes = require('./routes/auth'); // Added auth route
 
-// Server
+app.use('/api/events', eventRoutes);
+app.use('/api/auth', authRoutes); // Now /api/auth/register works
+
+// Global error handler for better debug info
+app.use((err, req, res, next) => {
+  console.error('🔥 Server error:', err.stack);
+  res.status(500).json({ error: 'Server error' });
+});
+
+// Server listen
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
