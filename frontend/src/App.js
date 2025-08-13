@@ -4,8 +4,10 @@ import Home from './pages/Home';
 import CreateEvent from './pages/CreateEvent';
 import JoinEvent from './pages/JoinEvent';
 import RideRequests from './pages/RideRequests';
+import Login from './pages/Login';
+import Register from './pages/Register.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaPlusCircle, FaSignInAlt, FaCarSide } from 'react-icons/fa';
+import { FaPlusCircle, FaSignInAlt, FaCarSide, FaUserCircle } from 'react-icons/fa';
 
 function App() {
   return (
@@ -33,6 +35,11 @@ function App() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto gap-2">
               <li className="nav-item">
+                <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/account">
+                  <FaUserCircle /> Account
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/create">
                   <FaPlusCircle /> Create Ride
                 </Link>
@@ -59,6 +66,9 @@ function App() {
           <Route path="/create" element={<CreateEvent />} />
           <Route path="/join" element={<JoinEvent />} />
           <Route path="/rides" element={<RideRequests />} />
+          <Route path="/account" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </Router>
