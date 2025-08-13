@@ -40,9 +40,12 @@ export default function Login() {
         />
         <button className="btn btn-primary w-100">Login</button>
       </form>
-      <p className="mt-3" text-white>
-        Don't have an account? <Link to="/register" text-white>Register here</Link>
-      </p>
+      <p className="mt-3 text-white">
+  Don't have an account?{' '}
+  <Link to="/register" className="text-white fw-bold">
+    Register here
+  </Link>
+</p>
     </div>
   );
 }
