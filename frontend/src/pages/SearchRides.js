@@ -8,7 +8,7 @@ export default function SearchRides() {
 
   useEffect(() => {
     async function load() {
-      // convert lat/lng to query params
+      // 
       const res = await api.get('/rides/search', { params: { lat: position.lat, lng: position.lng, radius: 10000 }});
       setRides(res.data);
     }
