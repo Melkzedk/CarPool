@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user'); // 'user' or 'driver'
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user"); // 'user' or 'driver'
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
       // Replace with your backend endpoint
-      const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password, role });
-      alert('Registration successful!');
+      const res = await axios.post("http://localhost:5000/api/auth/register", {
+        name,
+        email,
+        password,
+        role,
+      });
+      alert("Registration successful!");
       console.log(res.data);
     } catch (err) {
-      alert(err.response?.data?.error || 'Registration failed');
+      alert(err.response?.data?.error || "Registration failed");
     }
   };
 
@@ -59,7 +64,10 @@ export default function Register() {
         <button className="btn btn-success w-100">Register</button>
       </form>
       <p className="mt-3">
-        Already have an account? <Link to="/login">Login here</Link>
+        Already have an account?{" "}
+        <Link to="/login" className="text-white fw-bold">
+          Login here
+        </Link>
       </p>
     </div>
   );
