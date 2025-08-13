@@ -1,18 +1,26 @@
-require('dotenv').config();
 const express = require('express');
-const connectDB = require('./config/db');
+const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-connectDB();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/rides', require('./routes/rides'));
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error(err));
+
+// Routes
 const eventRoutes = require('./routes/events');
-app.use('/api/events', eventRoutes);
+app.use('/api/events', eventRoutes); // MOUNT ROUTE HERE ✅
 
-
+// Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, ()=>console.log(`Server started on ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
