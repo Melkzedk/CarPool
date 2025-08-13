@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       // Replace with your backend endpoint
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-      alert('Login successful!');
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
+      alert("Login successful!");
       console.log(res.data);
     } catch (err) {
-      alert(err.response?.data?.error || 'Login failed');
+      alert(err.response?.data?.error || "Login failed");
     }
   };
 
@@ -41,11 +44,11 @@ export default function Login() {
         <button className="btn btn-primary w-100">Login</button>
       </form>
       <p className="mt-3 text-white">
-  Don't have an account?{' '}
-  <Link to="/register" className="text-white fw-bold">
-    Register here
-  </Link>
-</p>
+        Don't have an account?{" "}
+        <Link to="/register" className="text-white fw-bold">
+          Register here
+        </Link>
+      </p>
     </div>
   );
 }
