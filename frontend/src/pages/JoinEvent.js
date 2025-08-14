@@ -45,31 +45,38 @@ export default function JoinEvent() {
   };
 
   return (
-    <div className="container mt-3">
-      <h2>Join Event</h2>
-      <ul className="list-group">
+    <div className="container mt-4">
+      <h2 className="mb-4">Join Event</h2>
+      <div className="row">
         {events.length > 0 ? (
           events.map((e) => (
-            <li
-              key={e._id}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span>
-                {e.eventName} - {e.location} (
-                {new Date(e.eventDate).toLocaleDateString()})
-              </span>
-              <button
-                className="btn btn-success btn-sm"
-                onClick={() => handleJoin(e._id)}
-              >
-                Join
-              </button>
-            </li>
+            <div key={e._id} className="col-md-4 mb-4">
+              <div className="card shadow-sm h-100">
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title">{e.eventName}</h5>
+                  <p className="card-text mb-1">
+                    <strong>Location:</strong> {e.location}
+                  </p>
+                  <p className="card-text">
+                    <strong>Date:</strong>{" "}
+                    {new Date(e.eventDate).toLocaleDateString()}
+                  </p>
+                  <div className="mt-auto">
+                    <button
+                      className="btn btn-success w-100"
+                      onClick={() => handleJoin(e._id)}
+                    >
+                      Join
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))
         ) : (
-          <li className="list-group-item">No events available.</li>
+          <p>No events available.</p>
         )}
-      </ul>
+      </div>
     </div>
   );
 }
