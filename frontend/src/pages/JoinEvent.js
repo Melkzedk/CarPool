@@ -57,9 +57,20 @@ export default function JoinEvent() {
                   <p className="card-text mb-1">
                     <strong>Location:</strong> {e.location}
                   </p>
-                  <p className="card-text">
-                    <strong>Date:</strong>{" "}
-                    {new Date(e.eventDate).toLocaleDateString()}
+                  <p className="card-text mb-1">
+                    <strong>Date:</strong> {new Date(e.eventDate).toLocaleDateString()}
+                  </p>
+                  <p className="card-text mb-1">
+                    <strong>Time:</strong> {e.time || "Not specified"}
+                  </p>
+                  <p className="card-text mb-1">
+                    <strong>Description:</strong> {e.description || "No description"}
+                  </p>
+                  <p className="card-text mb-1">
+                    <strong>Seats Available:</strong> {e.seatsAvailable ?? "N/A"}
+                  </p>
+                  <p className="card-text mb-1">
+                    <strong>Contact:</strong> {e.createdBy?.phone || "N/A"}
                   </p>
                   <div className="mt-auto">
                     <button
