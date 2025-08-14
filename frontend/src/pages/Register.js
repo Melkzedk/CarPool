@@ -1,9 +1,11 @@
+// Register.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function Register() {
   const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(""); // 📱 Added
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
@@ -16,13 +18,21 @@ export default function Register() {
     try {
       const payload = {
         name,
+        phoneNumber, // 📱 Send to backend
         email,
         password,
         role,
-        ...(role === "driver" && { carModel, licensePlate, drivingLicenseNumber }),
+        ...(role === "driver" && {
+          carModel,
+          licensePlate,
+          drivingLicenseNumber,
+        }),
       };
 
-      const res = await axios.post("http://localhost:5000/api/auth/register", payload);
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        payload
+      );
       alert("Registration successful!");
       console.log(res.data);
     } catch (err) {
@@ -43,6 +53,14 @@ export default function Register() {
           required
         />
         <input
+          type="text"
+          className="form-control mb-3"
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          required
+        />
+        <input
           type="email"
           className="form-control mb-3"
           placeholder="Email"
@@ -58,7 +76,7 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        
+
         <select
           className="form-control mb-3"
           value={role}
