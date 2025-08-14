@@ -1,89 +1,135 @@
-// routes/auth.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-// Use env variable for secret
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key_here';
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key_here";
 
 // ====================
 // REGISTER
 // ====================
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { 
+      name, 
+      phoneNumber, 
+      email, 
+      password, 
+      role, 
+      carModel, 
+      licensePlate, 
+      drivingLicenseNumber 
+    } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Please fill all fields' });
+    // Validate required fields
+    if (!name || !phoneNumber || !email || !password || !role) {
+      return res.status(400).json({ message: "Please fill all required fields" });
     }
 
+    // Extra checks for drivers
+    if (role === "driver" && (!carModel || !licensePlate || !drivingLicenseNumber)) {
+      return res.status(400).json({ message: "Please provide all driver details" });
+    }
+
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "User already exists" });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ name, email, password: hashedPassword });
+    // Create new user
+    const newUser = new User({
+      name,
+      phoneNumber,
+      email,
+      password: hashedPassword,
+      role,
+      ...(role === "driver" && { carModel, licensePlate, drivingLicenseNumber }),
+    });
+
     await newUser.save();
 
-    // Generate token so they don't have to login immediately
+    // Generate token
     const token = jwt.sign(
-      { id: newUser._id, name: newUser.name },
+      { id: newUser._id, name: newUser.name, role: newUser.role },
       JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: "1h" }
     );
 
     res.status(201).json({
-      message: 'User registered successfully',
+      message: "User registered successfully",
       token,
-      user: { id: newUser._id, name: newUser.name, email: newUser.email }
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        phoneNumber: newUser.phoneNumber,
+        role: newUser.role,
+        ...(role === "driver" && { 
+          carModel: newUser.carModel, 
+          licensePlate: newUser.licensePlate, 
+          drivingLicenseNumber: newUser.drivingLicenseNumber 
+        }),
+      }
     });
 
   } catch (err) {
-    console.error('Register error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Register error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // ====================
 // LOGIN
 // ====================
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: 'Please fill all fields' });
+      return res.status(400).json({ message: "Please fill all fields" });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign(
-      { id: user._id, name: user.name },
+      { id: user._id, name: user.name, role: user.role },
       JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: "1h" }
     );
 
     res.json({
-      message: 'Login successful',
+      message: "Login successful",
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        role: user.role,
+        ...(user.role === "driver" && { 
+          carModel: user.carModel, 
+          licensePlate: user.licensePlate, 
+          drivingLicenseNumber: user.drivingLicenseNumber 
+        }),
+      }
     });
 
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
