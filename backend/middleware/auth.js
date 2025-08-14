@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = function (req, res, next) {
-  // Check token in header or cookies
   const token = req.header('x-auth-token') || req.cookies?.token;
 
   if (!token) {
@@ -10,7 +9,7 @@ module.exports = function (req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded.user; // Attach user data to request
+    req.user = decoded; // ⚡ attach decoded directly
     next();
   } catch (err) {
     console.error('JWT Verification Error:', err.message);

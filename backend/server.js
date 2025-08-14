@@ -27,12 +27,14 @@ app.use((req, res, next) => {
 
 // Routes
 const eventRoutes = require('./routes/events');
-const authRoutes = require('./routes/auth'); // Added auth route
+const authRoutes = require('./routes/auth');
+const ridesRoutes = require('./routes/rides'); // ✅ Added rides route
 
 app.use('/api/events', eventRoutes);
-app.use('/api/auth', authRoutes); // Now /api/auth/register works
+app.use('/api/auth', authRoutes);
+app.use('/api/rides', ridesRoutes); // ✅ Mounted rides route
 
-// Global error handler for better debug info
+// Global error handler
 app.use((err, req, res, next) => {
   console.error('🔥 Server error:', err.stack);
   res.status(500).json({ error: 'Server error' });

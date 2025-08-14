@@ -27,7 +27,7 @@ router.post("/", auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    // Create new event with creator as a reference
+    // Create new event with nested creator info
     const newEvent = new Event({
       eventName,
       eventDate,
@@ -36,7 +36,11 @@ router.post("/", auth, async (req, res) => {
       description,
       seatsAvailable: seatsAvailable || null,
       participants: [],
-      createdBy: user._id // ✅ reference, not object
+      createdBy: {
+        userId: user._id,
+        name: user.name,
+        phone: user.phoneNumber
+      }
     });
 
     await newEvent.save();
@@ -49,8 +53,7 @@ router.post("/", auth, async (req, res) => {
 // ✅ Get All Events
 router.get("/", auth, async (req, res) => {
   try {
-    const events = await Event.find()
-      .populate("createdBy", "name phoneNumber email"); // ✅ include phone
+    const events = await Event.find(); // no populate needed for nested object
     res.json(events);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -69,7 +72,10 @@ router.post("/:id/join", auth, async (req, res) => {
     }
 
     // Optional: check seat availability
-    if (event.seatsAvailable !== null && event.participants.length >= event.seatsAvailable) {
+    if (
+      event.seatsAvailable !== null &&
+      event.participants.length >= event.seatsAvailable
+    ) {
       return res.status(400).json({ error: "No seats available" });
     }
 
