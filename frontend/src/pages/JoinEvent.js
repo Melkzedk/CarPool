@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function JoinEvent() {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState(""); // 🔍 Search state
+  const [filteredEvents, setFilteredEvents] = useState([]); // Keep filtered list
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,7 +20,10 @@ export default function JoinEvent() {
       .get("http://localhost:5000/api/events", {
         headers: { "x-auth-token": token },
       })
-      .then((res) => setEvents(res.data))
+      .then((res) => {
+        setEvents(res.data);
+        setFilteredEvents(res.data); // Show all events by default
+      })
       .catch((err) => {
         console.error(err);
         alert("Failed to fetch events.");
@@ -45,26 +49,38 @@ export default function JoinEvent() {
     }
   };
 
-  // 🔍 Filtered events
-  const filteredEvents = events.filter(
-    (e) =>
-      e.eventName?.toLowerCase().includes(search.toLowerCase()) ||
-      e.location?.toLowerCase().includes(search.toLowerCase()) ||
-      e.description?.toLowerCase().includes(search.toLowerCase())
-  );
+  // 🔍 Handle search when clicking button
+  const handleSearchClick = () => {
+    if (search.trim() === "") {
+      setFilteredEvents(events); // Reset to all events if empty
+    } else {
+      const filtered = events.filter(
+        (e) =>
+          e.eventName?.toLowerCase().includes(search.toLowerCase()) ||
+          e.location?.toLowerCase().includes(search.toLowerCase()) ||
+          e.description?.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredEvents(filtered);
+    }
+  };
 
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Join Event</h2>
 
-      {/* 🔍 Search bar */}
-      <input
-        type="text"
-        className="form-control mb-4"
-        placeholder="Search events by name, location, or description..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      {/* 🔍 Search bar with button */}
+      <div className="input-group mb-4">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search events by name, location, or description..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button className="btn btn-primary" onClick={handleSearchClick}>
+          Search
+        </button>
+      </div>
 
       <div className="row">
         {filteredEvents.length > 0 ? (
