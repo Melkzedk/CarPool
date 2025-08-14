@@ -52,7 +52,7 @@ export default function Home() {
           href="/events"
           className="btn btn-light btn-sm mt-3 shadow animate__animated animate__pulse animate__infinite"
         >
-          🚗 Find an Event
+          🚗 Find an Event/Events
         </a>
       </div>
     </div>

@@ -44,6 +44,8 @@ export default function JoinEvent() {
         { headers: { "x-auth-token": token } }
       );
       alert(res.data.message);
+      // 👉 After joining, go to rides for this event
+      navigate(`/rides?eventId=${id}`);
     } catch (err) {
       alert(err.response?.data?.error || "Something went wrong");
     }
@@ -54,11 +56,12 @@ export default function JoinEvent() {
     if (search.trim() === "") {
       setFilteredEvents(events); // Reset to all events if empty
     } else {
+      const q = search.toLowerCase();
       const filtered = events.filter(
         (e) =>
-          e.eventName?.toLowerCase().includes(search.toLowerCase()) ||
-          e.location?.toLowerCase().includes(search.toLowerCase()) ||
-          e.description?.toLowerCase().includes(search.toLowerCase())
+          e.eventName?.toLowerCase().includes(q) ||
+          e.location?.toLowerCase().includes(q) ||
+          e.description?.toLowerCase().includes(q)
       );
       setFilteredEvents(filtered);
     }
@@ -76,6 +79,7 @@ export default function JoinEvent() {
           placeholder="Search events by name, location, or description..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSearchClick()}
         />
         <button className="btn btn-primary" onClick={handleSearchClick}>
           Search
@@ -97,26 +101,23 @@ export default function JoinEvent() {
                     {new Date(e.eventDate).toLocaleDateString()}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Time:</strong> {e.eventTime || "Not specified"}
+                    <strong>Time:</strong> {e.eventTime || e.time || "Not specified"}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Description:</strong>{" "}
-                    {e.description || "No description"}
+                    <strong>Description:</strong> {e.description || "No description"}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Seats Available:</strong>{" "}
-                    {e.seatsAvailable ?? "N/A"}
+                    <strong>Seats Available:</strong> {e.seatsAvailable ?? "N/A"}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Contact:</strong>{" "}
-                    {e.createdBy?.phoneNumber || "N/A"}
+                    <strong>Contact:</strong> {e.createdBy?.phoneNumber || e.createdBy?.phone || "N/A"}
                   </p>
                   <div className="mt-auto">
                     <button
                       className="btn btn-success w-100"
                       onClick={() => handleJoin(e._id)}
                     >
-                      Join
+                      Join & View Rides
                     </button>
                   </div>
                 </div>
