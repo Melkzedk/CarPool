@@ -1,32 +1,30 @@
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-
+// routes/auth.js
+const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User'); // Import User model
 
-// =========================
-// REGISTER
-// =========================
-router.post("/register", async (req, res) => {
+// JWT secret key (in real app, use environment variable)
+const JWT_SECRET = 'your_secret_key_here';
+
+// ====================
+// REGISTER ROUTE
+// ====================
+router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, role, carModel, licensePlate, drivingLicenseNumber } = req.body;
+    const { name, email, password } = req.body;
 
-    // Basic validation
-    if (!name || !email || !password || !role) {
-      return res.status(400).json({ error: "All required fields must be filled" });
+    // Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Please fill all fields' });
     }
 
-    // Role-specific validation
-    if (role === "driver") {
-      if (!carModel || !licensePlate || !drivingLicenseNumber) {
-        return res.status(400).json({ error: "Driver must provide car details and license number" });
-      }
-    }
-
-    // Check if email already exists
+    // Check if user exists
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ error: "Email already registered" });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,72 +33,55 @@ router.post("/register", async (req, res) => {
     const newUser = new User({
       name,
       email,
-      password: hashedPassword,
-      role,
-      carModel: role === "driver" ? carModel : undefined,
-      licensePlate: role === "driver" ? licensePlate : undefined,
-      drivingLicenseNumber: role === "driver" ? drivingLicenseNumber : undefined
+      password: hashedPassword
     });
 
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully", user: newUser });
+    res.status(201).json({ message: 'User registered successfully' });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    console.error('Register error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-// =========================
-// LOGIN
-// =========================
-router.post("/login", async (req, res) => {
+// ====================
+// LOGIN ROUTE
+// ====================
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
     // Validate input
     if (!email || !password) {
-      return res.status(400).json({ error: "Please enter all fields" });
+      return res.status(400).json({ message: 'Please fill all fields' });
     }
 
-    // Check if user exists
+    // Find user by email
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ error: "Invalid credentials" });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
 
-    // Compare password
+    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
 
-    // Create JWT payload
-    const payload = {
-      user: {
-        id: user.id,
-        role: user.role
-      }
-    };
+    // Create JWT token
+    const token = jwt.sign({ id: user._id, name: user.name }, JWT_SECRET, { expiresIn: '1h' });
 
-    // Sign token
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" },
-      (err, token) => {
-        if (err) throw err;
-        res.json({
-          token,
-          user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role
-          }
-        });
-      }
-    );
+    // Send token and user data
+    res.json({
+      message: 'Login successful',
+      token,
+      user: { id: user._id, name: user.name, email: user.email }
+    });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    console.error('Login error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

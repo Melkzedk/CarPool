@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function JoinEvent() {
   const [events, setEvents] = useState([]);
@@ -14,24 +14,33 @@ export default function JoinEvent() {
       return;
     }
 
-    axios.get('http://localhost:5000/api/events', {
-      headers: { "x-auth-token": token }
-    })
-      .then(res => setEvents(res.data))
-      .catch(err => console.error(err));
+    axios
+      .get("http://localhost:5000/api/events", {
+        headers: { "x-auth-token": token },
+      })
+      .then((res) => setEvents(res.data))
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to fetch events.");
+      });
   }, [navigate]);
 
   const handleJoin = async (id) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in.");
+      return navigate("/login");
+    }
+
     try {
-      const token = localStorage.getItem("token");
       const res = await axios.post(
         `http://localhost:5000/api/events/${id}/join`,
-        {}, // body
+        {},
         { headers: { "x-auth-token": token } }
       );
       alert(res.data.message);
     } catch (err) {
-      alert(err.response?.data?.error || 'Something went wrong');
+      alert(err.response?.data?.error || "Something went wrong");
     }
   };
 
@@ -39,17 +48,27 @@ export default function JoinEvent() {
     <div className="container mt-3">
       <h2>Join Event</h2>
       <ul className="list-group">
-        {events.map(e => (
-          <li key={e._id} className="list-group-item d-flex justify-content-between align-items-center">
-            <span>{e.eventName} - {e.location}</span>
-            <button
-              className="btn btn-success btn-sm"
-              onClick={() => handleJoin(e._id)}
+        {events.length > 0 ? (
+          events.map((e) => (
+            <li
+              key={e._id}
+              className="list-group-item d-flex justify-content-between align-items-center"
             >
-              Join
-            </button>
-          </li>
-        ))}
+              <span>
+                {e.eventName} - {e.location} (
+                {new Date(e.eventDate).toLocaleDateString()})
+              </span>
+              <button
+                className="btn btn-success btn-sm"
+                onClick={() => handleJoin(e._id)}
+              >
+                Join
+              </button>
+            </li>
+          ))
+        ) : (
+          <li className="list-group-item">No events available.</li>
+        )}
       </ul>
     </div>
   );
