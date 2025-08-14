@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Event = require('../models/Event');
-const auth = require('../middleware/auth'); // 🔹 Import auth middleware
+const auth = require('../middleware/auth');
 
-// POST - Create event (Protected)
+// Create Event (Protected)
 router.post('/', auth, async (req, res) => {
   try {
     const { eventName, eventDate, location } = req.body;
@@ -18,16 +18,15 @@ router.post('/', auth, async (req, res) => {
       location,
       participants: []
     });
-    await newEvent.save();
 
+    await newEvent.save();
     res.status(201).json(newEvent);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET - Fetch all events (Protected - optional)
-// If you want events to be public, remove "auth" here
+// Get Events (Protected)
 router.get('/', auth, async (req, res) => {
   try {
     const events = await Event.find();
@@ -37,26 +36,26 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// POST - Join event (Protected)
+// Join Event (Protected)
 router.post('/:id/join', auth, async (req, res) => {
   try {
-    const userName = req.user.name; // 🔹 From decoded token
+    const userName = req.user.name; // ✅ must exist in token
+
     if (!userName) {
-      return res.status(400).json({ error: 'User name not found in token' });
+      return res.status(400).json({ error: 'User name missing in token' });
     }
 
     const event = await Event.findById(req.params.id);
     if (!event) return res.status(404).json({ error: 'Event not found' });
 
-    // Prevent duplicate joining
     if (event.participants.includes(userName)) {
-      return res.status(400).json({ error: 'You already joined this event' });
+      return res.status(400).json({ error: 'Already joined this event' });
     }
 
     event.participants.push(userName);
     await event.save();
 
-    res.json({ message: `You have joined the event: ${event.eventName}` });
+    res.json({ message: `You have joined: ${event.eventName}` });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
