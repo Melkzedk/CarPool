@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function JoinEvent() {
   const [events, setEvents] = useState([]);
+  const [search, setSearch] = useState(""); // 🔍 Search state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,12 +45,30 @@ export default function JoinEvent() {
     }
   };
 
+  // 🔍 Filtered events
+  const filteredEvents = events.filter(
+    (e) =>
+      e.eventName?.toLowerCase().includes(search.toLowerCase()) ||
+      e.location?.toLowerCase().includes(search.toLowerCase()) ||
+      e.description?.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Join Event</h2>
+
+      {/* 🔍 Search bar */}
+      <input
+        type="text"
+        className="form-control mb-4"
+        placeholder="Search events by name, location, or description..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
       <div className="row">
-        {events.length > 0 ? (
-          events.map((e) => (
+        {filteredEvents.length > 0 ? (
+          filteredEvents.map((e) => (
             <div key={e._id} className="col-md-4 mb-4">
               <div className="card shadow-sm h-100">
                 <div className="card-body d-flex flex-column">
@@ -58,19 +77,23 @@ export default function JoinEvent() {
                     <strong>Location:</strong> {e.location}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Date:</strong> {new Date(e.eventDate).toLocaleDateString()}
+                    <strong>Date:</strong>{" "}
+                    {new Date(e.eventDate).toLocaleDateString()}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Time:</strong> {e.time || "Not specified"}
+                    <strong>Time:</strong> {e.eventTime || "Not specified"}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Description:</strong> {e.description || "No description"}
+                    <strong>Description:</strong>{" "}
+                    {e.description || "No description"}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Seats Available:</strong> {e.seatsAvailable ?? "N/A"}
+                    <strong>Seats Available:</strong>{" "}
+                    {e.seatsAvailable ?? "N/A"}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Contact:</strong> {e.createdBy?.phone || "N/A"}
+                    <strong>Contact:</strong>{" "}
+                    {e.createdBy?.phoneNumber || "N/A"}
                   </p>
                   <div className="mt-auto">
                     <button
