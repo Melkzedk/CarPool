@@ -14,7 +14,7 @@ export default function CreateEvent() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role"); // assuming role is saved after login
+    const role = localStorage.getItem("role");
     if (!token) {
       alert("You must be logged in to create an event.");
       navigate("/login");
