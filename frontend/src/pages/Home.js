@@ -1,59 +1,65 @@
-import React from "react";
-import { Link } from "react-router-dom"; // ✅ Import Link
-import "bootstrap/dist/css/bootstrap.min.css";
-import "animate.css";
+// Home.js
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function Home() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/events");
+        setEvents(res.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return <p className="text-center mt-5">Loading events...</p>;
+  }
+
   return (
-    <div
-      className="bg-primary text-white vh-100 d-flex flex-column align-items-center justify-content-center text-center animate__animated animate__fadeIn"
-      style={{ overflow: "hidden" }}
-    >
-      <div className="container">
-        <h1 className="fw-bold mb-2" style={{ fontSize: "2.5rem" }}>
-          Welcome to Carpool
-        </h1>
-        <p className="mb-3" style={{ fontSize: "1.1rem" }}>
-          Share rides with people attending the same event — cheaper, greener, and more fun.
-        </p>
-
-        {/* Features */}
-        <div className="row g-3 justify-content-center">
-          <div className="col-4 animate__animated animate__fadeInUp">
-            <div className="card bg-light text-dark shadow-sm h-100">
-              <div className="card-body p-3">
-                <h6 className="fw-bold">💰 Save Costs</h6>
-                <p className="small mb-0">Split fuel & parking expenses.</p>
+    <div className="container mt-4">
+      <h2 className="mb-3">All Events</h2>
+      <div className="row">
+        {events.length === 0 ? (
+          <p>No events available.</p>
+        ) : (
+          events.map((event) => (
+            <div className="col-md-4 mb-3" key={event._id}>
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title">{event.eventName}</h5>
+                  <p className="card-text">
+                    <strong>Date:</strong>{" "}
+                    {new Date(event.eventDate).toLocaleDateString()} <br />
+                    <strong>Location:</strong> {event.location}
+                  </p>
+                  {/* ✅ Show who created the event */}
+                  <p className="text-muted">
+                    Created by:{" "}
+                    {event.createdBy?.name || "Unknown"} (
+                    {event.createdBy?.userId || "N/A"})
+                  </p>
+                  <Link
+                    to={`/join/${event._id}`}
+                    className="btn btn-primary btn-sm"
+                  >
+                    Join Event
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="col-4 animate__animated animate__fadeInUp animate__delay-1s">
-            <div className="card bg-light text-dark shadow-sm h-100">
-              <div className="card-body p-3">
-                <h6 className="fw-bold">🤝 Meet People</h6>
-                <p className="small mb-0">Connect with fellow event-goers.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-4 animate__animated animate__fadeInUp animate__delay-2s">
-            <div className="card bg-light text-dark shadow-sm h-100">
-              <div className="card-body p-3">
-                <h6 className="fw-bold">🌍 Eco-Friendly</h6>
-                <p className="small mb-0">Reduce carbon emissions together.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <Link
-          to="/join"   // ✅ Directs to JoinEvent.js
-          className="btn btn-light btn-sm mt-3 shadow animate__animated animate__pulse animate__infinite"
-        >
-          🚗 Find an Event/Events
-        </Link>
+          ))
+        )}
       </div>
     </div>
   );

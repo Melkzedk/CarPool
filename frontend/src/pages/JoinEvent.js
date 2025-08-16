@@ -1,142 +1,81 @@
-import React, { useState, useEffect } from "react";
+// JoinEvent.js
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export default function JoinEvent() {
-  const [events, setEvents] = useState([]);
-  const [search, setSearch] = useState("");
-  const [filteredEvents, setFilteredEvents] = useState([]);
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // ✅ Get current logged-in user
-  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You must be logged in to join an event.");
-      navigate("/login");
-      return;
-    }
+    const fetchEvent = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/events/${id}`);
+        setEvent(res.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching event:", err);
+        setLoading(false);
+      }
+    };
 
-    axios
-      .get("http://localhost:5000/api/events", {
-        headers: { "x-auth-token": token },
-      })
-      .then((res) => {
-        setEvents(res.data);
-        setFilteredEvents(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to fetch events.");
-      });
-  }, [navigate]);
+    fetchEvent();
+  }, [id]);
 
-  const handleJoin = async (id) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You must be logged in.");
+  const handleJoin = async () => {
+    if (!user || !token) {
+      alert("Please login to join the event.");
       return navigate("/login");
     }
 
     try {
-      const res = await axios.post(
+      await axios.post(
         `http://localhost:5000/api/events/${id}/join`,
-        {},
-        { headers: { "x-auth-token": token } }
+        { userId: user._id },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      alert(res.data.message);
-      navigate(`/rides?eventId=${id}`);
+      alert("You have successfully joined the event!");
+      navigate("/");
     } catch (err) {
-      alert(err.response?.data?.error || "Something went wrong");
+      console.error("Error joining event:", err);
+      alert("Failed to join event. Please try again.");
     }
   };
 
-  const handleSearchClick = () => {
-    if (search.trim() === "") {
-      setFilteredEvents(events);
-    } else {
-      const q = search.toLowerCase();
-      const filtered = events.filter(
-        (e) =>
-          e.eventName?.toLowerCase().includes(q) ||
-          e.location?.toLowerCase().includes(q) ||
-          e.description?.toLowerCase().includes(q)
-      );
-      setFilteredEvents(filtered);
-    }
-  };
+  if (loading) {
+    return <p className="text-center mt-5">Loading event...</p>;
+  }
+
+  if (!event) {
+    return <p className="text-center mt-5">Event not found.</p>;
+  }
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">Join Event</h2>
+      <h2>{event.eventName}</h2>
+      <p>
+        <strong>Date:</strong>{" "}
+        {new Date(event.eventDate).toLocaleDateString()} <br />
+        <strong>Location:</strong> {event.location}
+      </p>
+      <p>{event.description}</p>
 
-      {/* 🔍 Search bar */}
-      <div className="input-group mb-4">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search events by name, location, or description..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearchClick()}
-        />
-        <button className="btn btn-primary" onClick={handleSearchClick}>
-          Search
-        </button>
-      </div>
+      {/* ✅ Show who created the event */}
+      <p className="text-muted">
+        Created by: {event.createdBy?.name || "Unknown"} (
+        {event.createdBy?.userId || "N/A"})
+      </p>
 
-      <div className="row">
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((e) => (
-            <div key={e._id} className="col-md-4 mb-4">
-              <div className="card shadow-sm h-100">
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{e.eventName}</h5>
-                  <p className="card-text mb-1">
-                    <strong>Location:</strong> {e.location}
-                  </p>
-                  <p className="card-text mb-1">
-                    <strong>Date:</strong>{" "}
-                    {new Date(e.eventDate).toLocaleDateString()}
-                  </p>
-                  <p className="card-text mb-1">
-                    <strong>Time:</strong> {e.eventTime || "Not specified"}
-                  </p>
-                  <p className="card-text mb-1">
-                    <strong>Description:</strong> {e.description || "No description"}
-                  </p>
-                  <p className="card-text mb-1">
-                    <strong>Seats Available:</strong> {e.seatsAvailable ?? "N/A"}
-                  </p>
-                  <p className="card-text mb-1">
-                    <strong>Contact:</strong>{" "}
-                    {e.createdBy?.phoneNumber || "N/A"}
-                  </p>
-
-                  <div className="mt-auto">
-                    {currentUser && e.createdBy?._id === currentUser._id ? (
-                      <button className="btn btn-secondary w-100" disabled>
-                        You created this event
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-success w-100"
-                        onClick={() => handleJoin(e._id)}
-                      >
-                        Join & View Rides
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No events available.</p>
-        )}
-      </div>
+      <button onClick={handleJoin} className="btn btn-success">
+        Join Event
+      </button>
     </div>
   );
 }

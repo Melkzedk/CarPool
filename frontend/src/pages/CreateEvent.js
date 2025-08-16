@@ -25,9 +25,10 @@ export default function CreateEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
 
     try {
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:5000/api/events",
         {
           eventName,
@@ -36,11 +37,17 @@ export default function CreateEvent() {
           location,
           description,
           ...(userRole === "driver" && { seatsAvailable }),
+          createdBy: {
+            userId: user._id,
+            name: user.name,
+            phone: user.phone,
+          },
         },
         { headers: { "x-auth-token": token } }
       );
+
       alert("Event created!");
-      navigate("/join");
+      navigate(`/join/${res.data._id}`);
     } catch (err) {
       alert(err.response?.data?.error || "Failed to create event");
     }

@@ -6,7 +6,7 @@ import axios from "axios";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // For redirection
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,13 +16,22 @@ export default function Login() {
         password,
       });
 
-      // Save token and user details to localStorage
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("role", res.data.user.role); // ✅ Save role
+      const { token, user } = res.data;
+
+      // ✅ Ensure we only save what we need for event creation
+      const userData = {
+        _id: user._id,
+        name: user.name,
+        phone: user.phone || user.phoneNumber || "", // handle both cases
+        role: user.role,
+      };
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("role", userData.role);
 
       alert("Login successful!");
-      navigate("/create"); // Redirect after successful login
+      navigate("/create");
     } catch (err) {
       alert(err.response?.data?.error || "Login failed");
     }
