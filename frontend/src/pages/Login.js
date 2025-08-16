@@ -1,3 +1,4 @@
+// login.js
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -15,13 +16,13 @@ export default function Login() {
         password,
       });
 
-      // Save token to localStorage
+      // Save token and user details to localStorage
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("role", res.data.user.role); // ✅ Save role
 
       alert("Login successful!");
       navigate("/create"); // Redirect after successful login
-
     } catch (err) {
       alert(err.response?.data?.error || "Login failed");
     }
