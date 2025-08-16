@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 export default function JoinEvent() {
   const [events, setEvents] = useState([]);
-  const [search, setSearch] = useState(""); // 🔍 Search state
-  const [filteredEvents, setFilteredEvents] = useState([]); // Keep filtered list
+  const [search, setSearch] = useState("");
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const navigate = useNavigate();
+
+  // ✅ Get current logged-in user
+  const currentUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -22,7 +25,7 @@ export default function JoinEvent() {
       })
       .then((res) => {
         setEvents(res.data);
-        setFilteredEvents(res.data); // Show all events by default
+        setFilteredEvents(res.data);
       })
       .catch((err) => {
         console.error(err);
@@ -44,17 +47,15 @@ export default function JoinEvent() {
         { headers: { "x-auth-token": token } }
       );
       alert(res.data.message);
-      // 👉 After joining, go to rides for this event
       navigate(`/rides?eventId=${id}`);
     } catch (err) {
       alert(err.response?.data?.error || "Something went wrong");
     }
   };
 
-  // 🔍 Handle search when clicking button
   const handleSearchClick = () => {
     if (search.trim() === "") {
-      setFilteredEvents(events); // Reset to all events if empty
+      setFilteredEvents(events);
     } else {
       const q = search.toLowerCase();
       const filtered = events.filter(
@@ -71,7 +72,7 @@ export default function JoinEvent() {
     <div className="container mt-4">
       <h2 className="mb-4">Join Event</h2>
 
-      {/* 🔍 Search bar with button */}
+      {/* 🔍 Search bar */}
       <div className="input-group mb-4">
         <input
           type="text"
@@ -101,7 +102,7 @@ export default function JoinEvent() {
                     {new Date(e.eventDate).toLocaleDateString()}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Time:</strong> {e.eventTime || e.time || "Not specified"}
+                    <strong>Time:</strong> {e.eventTime || "Not specified"}
                   </p>
                   <p className="card-text mb-1">
                     <strong>Description:</strong> {e.description || "No description"}
@@ -110,15 +111,23 @@ export default function JoinEvent() {
                     <strong>Seats Available:</strong> {e.seatsAvailable ?? "N/A"}
                   </p>
                   <p className="card-text mb-1">
-                    <strong>Contact:</strong> {e.createdBy?.phoneNumber || e.createdBy?.phone || "N/A"}
+                    <strong>Contact:</strong>{" "}
+                    {e.createdBy?.phoneNumber || "N/A"}
                   </p>
+
                   <div className="mt-auto">
-                    <button
-                      className="btn btn-success w-100"
-                      onClick={() => handleJoin(e._id)}
-                    >
-                      Join & View Rides
-                    </button>
+                    {currentUser && e.createdBy?._id === currentUser._id ? (
+                      <button className="btn btn-secondary w-100" disabled>
+                        You created this event
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-success w-100"
+                        onClick={() => handleJoin(e._id)}
+                      >
+                        Join & View Rides
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
