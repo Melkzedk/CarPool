@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom"; // ✅ Import Link
 import "bootstrap/dist/css/bootstrap.min.css";
 import "animate.css";
 
@@ -9,7 +10,6 @@ export default function Home() {
       style={{ overflow: "hidden" }}
     >
       <div className="container">
-        {/* Title */}
         <h1 className="fw-bold mb-2" style={{ fontSize: "2.5rem" }}>
           Welcome to Carpool
         </h1>
@@ -17,7 +17,7 @@ export default function Home() {
           Share rides with people attending the same event — cheaper, greener, and more fun.
         </p>
 
-        {/* Features in one row */}
+        {/* Features */}
         <div className="row g-3 justify-content-center">
           <div className="col-4 animate__animated animate__fadeInUp">
             <div className="card bg-light text-dark shadow-sm h-100">
@@ -48,12 +48,12 @@ export default function Home() {
         </div>
 
         {/* Call to Action */}
-        <a
-          href="/events"
+        <Link
+          to="/join"   // ✅ Directs to JoinEvent.js
           className="btn btn-light btn-sm mt-3 shadow animate__animated animate__pulse animate__infinite"
         >
           🚗 Find an Event/Events
-        </a>
+        </Link>
       </div>
     </div>
   );
