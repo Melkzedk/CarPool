@@ -11,9 +11,9 @@ router.post("/", async (req, res) => {
       eventDate,
       location,
       description,
-      time,
+      time,             // 👈 must match schema
       seatsAvailable,
-      createdBy, // { userId, name, phone }
+      createdBy,        // { userId, name, phone }
     } = req.body;
 
     if (!createdBy?.userId || !createdBy?.name || !createdBy?.phone) {
@@ -28,10 +28,12 @@ router.post("/", async (req, res) => {
       time,
       seatsAvailable,
       createdBy,
+      participants: [], // 👈 ensure it's always initialized
     });
 
-    await newEvent.save();
-    res.status(201).json(newEvent);
+    const savedEvent = await newEvent.save();
+    // 👇 send back full event (with _id)
+    res.status(201).json(savedEvent);
   } catch (error) {
     console.error("Error creating event:", error);
     res.status(500).json({ message: "Error creating event", error: error.message });
