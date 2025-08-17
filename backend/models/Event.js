@@ -10,7 +10,7 @@ const eventSchema = new mongoose.Schema(
     seatsAvailable: { type: Number }, // optional
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // 👈 use ObjectId for consistency
     createdBy: {
-      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
       name: { type: String, required: true },
       phone: { type: String, required: true },
     },
