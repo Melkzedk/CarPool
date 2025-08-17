@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function CreateEvent() {
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
-  const [eventTime, setEventTime] = useState("");
+  const [time, setTime] = useState(""); // 👈 rename to time
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [seatsAvailable, setSeatsAvailable] = useState("");
@@ -33,7 +33,7 @@ export default function CreateEvent() {
         {
           eventName,
           eventDate,
-          eventTime,
+          time, // 👈 use time
           location,
           description,
           ...(userRole === "driver" && { seatsAvailable }),
@@ -72,10 +72,10 @@ export default function CreateEvent() {
           required
         />
         <input
-          type="time"
+          type="time" // 👈 binds to time
           className="form-control mb-2"
-          value={eventTime}
-          onChange={(e) => setEventTime(e.target.value)}
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
           required
         />
         <input
