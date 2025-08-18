@@ -6,13 +6,13 @@ const User = require("../models/User");
 const authMiddleware = require("../middleware/auth");
 
 // =======================
-// Create Events
+// Create Event
 // =======================
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { eventName, eventDate, time, location, description, seatsAvailable } = req.body;
 
-    // get logged-in user from JWT
+    // get logged-in user from JWTs
     const user = await User.findById(req.user.id).select("name phoneNumber");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
