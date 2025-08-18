@@ -55,7 +55,7 @@ router.get("/", async (_req, res) => {
 });
 
 // =======================
-// Get event created by a specific user
+// Get events created by a specific user
 // =======================
 router.get("/user/:userId", async (req, res) => {
   try {
