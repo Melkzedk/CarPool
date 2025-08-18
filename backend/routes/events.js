@@ -5,7 +5,7 @@ const Event = require("../models/Event");
 const User = require("../models/User");
 const authMiddleware = require("../middleware/auth");
 
-// =======================
+// =======================......
 // Create Event
 // =======================
 router.post("/", authMiddleware, async (req, res) => {
