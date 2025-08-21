@@ -52,7 +52,8 @@ function App() {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/join">
+                    {/* 🔥 Changed to /events instead of /join */}
+                    <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/events">
                       <FaSignInAlt /> Join Ride
                     </Link>
                   </li>
@@ -94,7 +95,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<CreateEvent />} />
-          <Route path="/join" element={<JoinEvent />} />
+          {/* 🔥 Changed to use param :id */}
+          <Route path="/join/:id" element={<JoinEvent />} />
           <Route path="/rides" element={<RideRequests />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
