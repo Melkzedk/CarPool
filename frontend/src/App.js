@@ -7,6 +7,7 @@ import RideRequests from './pages/RideRequests';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import EventsList from './pages/EventsList';
 import { FaPlusCircle, FaSignInAlt, FaCarSide, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 
 function App() {
@@ -97,6 +98,7 @@ function App() {
           <Route path="/rides" element={<RideRequests />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/events" element={<EventsList />} />
         </Routes>
       </div>
     </>
