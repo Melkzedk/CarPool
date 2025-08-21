@@ -9,13 +9,15 @@ export default function JoinEvent() {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/events/${id}`);
+        const res = await axios.get(`http://localhost:5000/api/events/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }, // ✅ send token
+        });
         setEvent(res.data);
         setLoading(false);
       } catch (err) {
@@ -24,8 +26,12 @@ export default function JoinEvent() {
       }
     };
 
-    fetchEvent();
-  }, [id]);
+    if (token) {
+      fetchEvent();
+    } else {
+      navigate("/login");
+    }
+  }, [id, token, navigate]);
 
   const handleJoin = async () => {
     if (!user || !token) {
@@ -34,9 +40,10 @@ export default function JoinEvent() {
     }
 
     try {
+      // ✅ no need to send userId, backend gets it from token
       await axios.post(
         `http://localhost:5000/api/events/${id}/join`,
-        { userId: user._id },
+        {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -44,8 +51,8 @@ export default function JoinEvent() {
       alert("You have successfully joined the event!");
       navigate("/");
     } catch (err) {
-      console.error("Error joining event:", err);
-      alert("Failed to join event. Please try again.");
+      console.error("Error joining event:", err.response?.data || err.message);
+      alert(err.response?.data?.msg || "Failed to join event. Please try again.");
     }
   };
 
@@ -67,7 +74,6 @@ export default function JoinEvent() {
       </p>
       <p>{event.description}</p>
 
-      {/* ✅ Show who created the event */}
       <p className="text-muted">
         Created by: {event.createdBy?.name || "Unknown"} (
         {event.createdBy?.userId || "N/A"})
