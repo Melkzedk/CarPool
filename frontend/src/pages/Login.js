@@ -57,7 +57,7 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button className="btn btn-primary w-100">Login</button>
+        <button className="btn btn-custom w-100">Login</button>
       </form>
       <p className="mt-3">
         Don't have an account?{" "}
