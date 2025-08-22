@@ -32,3 +32,5 @@
 #
 #       - name: Run tests
 #         run: deno test -A
+#
+#       - name: Run coverage
