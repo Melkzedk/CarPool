@@ -1,11 +1,11 @@
 // Register.js
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // 👈 added useNavigate
 import axios from "axios";
 
 export default function Register() {
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState(""); // 📱 Added
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
@@ -13,12 +13,14 @@ export default function Register() {
   const [licensePlate, setLicensePlate] = useState("");
   const [drivingLicenseNumber, setDrivingLicenseNumber] = useState("");
 
+  const navigate = useNavigate(); // 👈 initialize navigation
+
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
       const payload = {
         name,
-        phoneNumber, // 📱 Send to backend
+        phoneNumber,
         email,
         password,
         role,
@@ -33,8 +35,11 @@ export default function Register() {
         "http://localhost:5000/api/auth/register",
         payload
       );
-      alert("Registration successful!");
+
+      alert("Registration successful!"); // ✅ keep toast message
       console.log(res.data);
+
+      navigate("/login"); // 👈 redirect after success
     } catch (err) {
       alert(err.response?.data?.error || "Registration failed");
     }
