@@ -79,9 +79,10 @@ export default function JoinEvent() {
         {event.createdBy?.userId || "N/A"})
       </p>
 
-      <button onClick={handleJoin} className="btn btn-success">
-        Join Event
-      </button>
+      <button onClick={handleJoin} className="btn btn-custom">
+  Join Event
+</button>
+
     </div>
   );
 }
