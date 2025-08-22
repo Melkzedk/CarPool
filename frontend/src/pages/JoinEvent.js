@@ -52,7 +52,9 @@ export default function JoinEvent() {
       navigate("/");
     } catch (err) {
       console.error("Error joining event:", err.response?.data || err.message);
-      alert(err.response?.data?.msg || "Failed to join event. Please try again.");
+      alert(
+        err.response?.data?.msg || "Failed to join event. Please try again."
+      );
     }
   };
 
@@ -68,8 +70,8 @@ export default function JoinEvent() {
     <div className="container mt-4">
       <h2>{event.eventName}</h2>
       <p>
-        <strong>Date:</strong>{" "}
-        {new Date(event.eventDate).toLocaleDateString()} <br />
+        <strong>Date:</strong> {new Date(event.eventDate).toLocaleDateString()}{" "}
+        <br />
         <strong>Location:</strong> {event.location}
       </p>
       <p>{event.description}</p>
@@ -80,9 +82,8 @@ export default function JoinEvent() {
       </p>
 
       <button onClick={handleJoin} className="btn btn-custom">
-  Join Event
-</button>
-
+        Join Event
+      </button>
     </div>
   );
 }
