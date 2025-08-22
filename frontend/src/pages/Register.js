@@ -120,7 +120,7 @@ export default function Register() {
           </>
         )}
 
-        <button className="btn btn-success w-100">Register</button>
+        <button className="btn btn-custom w-100">Register</button>
       </form>
       <p className="mt-3">
         Already have an account?{" "}

@@ -48,3 +48,13 @@ body::before {
   transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
+/* Global button color */
+.btn-custom {
+  background-color: #008080 !important;  /* Teal */
+  border: none !important;
+  color: white !important;
+}
+
+.btn-custom:hover {
+  background-color: #006666 !important;  /* Darker teal */
+}
