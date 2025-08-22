@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 export default function CreateEvent() {
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
-  const [time, setTime] = useState(""); // 👈 rename to time
+  const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [seatsAvailable, setSeatsAvailable] = useState("");
+  const [costShare, setCostShare] = useState(""); // ✅ new field
   const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
 
@@ -34,10 +35,11 @@ export default function CreateEvent() {
         {
           eventName,
           eventDate,
-          time, // 👈 use time
+          time,
           location,
           description,
           ...(userRole === "driver" && { seatsAvailable }),
+          ...(userRole !== "driver" && { costShare }), // ✅ send costShare if not a driver
           createdBy: {
             userId: user._id,
             name: user.name,
@@ -55,7 +57,7 @@ export default function CreateEvent() {
   };
 
   return (
-    <div>
+    <div className="container mt-4">
       <h2>Create Event</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -73,7 +75,7 @@ export default function CreateEvent() {
           required
         />
         <input
-          type="time" // 👈 binds to time
+          type="time"
           className="form-control mb-2"
           value={time}
           onChange={(e) => setTime(e.target.value)}
@@ -99,6 +101,16 @@ export default function CreateEvent() {
             placeholder="Seats Available"
             value={seatsAvailable}
             onChange={(e) => setSeatsAvailable(e.target.value)}
+            required
+          />
+        )}
+        {userRole !== "driver" && (
+          <input
+            type="number"
+            className="form-control mb-2"
+            placeholder="Estimated Cost Share"
+            value={costShare}
+            onChange={(e) => setCostShare(e.target.value)}
             required
           />
         )}
