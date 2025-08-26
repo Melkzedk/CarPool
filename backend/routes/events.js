@@ -10,10 +10,20 @@ const authMiddleware = require("../middleware/auth");
 // =======================
 router.post("/", authMiddleware, async (req, res) => {
   try {
-    const { eventName, eventDate, time, location, description, seatsAvailable } = req.body;
+    const {
+      eventName,
+      eventDate,
+      time,
+      location,
+      description,
+      seatsAvailable,
+      estimatedCost,
+    } = req.body;
 
-    // get logged-in user from JWTs
-    const user = await User.findById(req.user.id).select("name phoneNumber");
+    // get logged-in user from JWT
+    const user = await User.findById(req.user.id).select(
+      "name phoneNumber role"
+    );
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -24,20 +34,23 @@ router.post("/", authMiddleware, async (req, res) => {
       time,
       location,
       description,
-      seatsAvailable,
+      ...(user.role === "driver" && { seatsAvailable }),
+      ...(user.role === "user" && { estimatedCost }),
       createdBy: {
         userId: user._id,
         name: user.name,
-        phone: user.phoneNumber
+        phone: user.phoneNumber,
       },
-      participants: []
+      participants: [],
     });
 
     const savedEvent = await newEvent.save();
     return res.status(201).json(savedEvent);
   } catch (error) {
     console.error("Error creating event:", error);
-    return res.status(500).json({ message: "Error creating event", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error creating event", error: error.message });
   }
 });
 
@@ -50,7 +63,9 @@ router.get("/", async (_req, res) => {
     return res.json(events);
   } catch (error) {
     console.error("Error fetching events:", error);
-    return res.status(500).json({ message: "Error fetching events", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error fetching events", error: error.message });
   }
 });
 
@@ -60,11 +75,15 @@ router.get("/", async (_req, res) => {
 router.get("/user/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const events = await Event.find({ "createdBy.userId": userId }).sort({ createdAt: -1 });
+    const events = await Event.find({ "createdBy.userId": userId }).sort({
+      createdAt: -1,
+    });
     return res.json(events);
   } catch (error) {
     console.error("Error fetching user events:", error);
-    return res.status(500).json({ message: "Error fetching user events", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error fetching user events", error: error.message });
   }
 });
 
@@ -84,7 +103,9 @@ router.get("/:id", async (req, res) => {
     return res.json(event);
   } catch (error) {
     console.error("Error fetching event:", error);
-    return res.status(500).json({ message: "Error fetching event", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error fetching event", error: error.message });
   }
 });
 
@@ -94,7 +115,7 @@ router.get("/:id", async (req, res) => {
 router.post("/:id/join", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id; // ✅ get from token instead of frontend
+    const userId = req.user.id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid event id" });
@@ -103,8 +124,19 @@ router.post("/:id/join", authMiddleware, async (req, res) => {
     const event = await Event.findById(id);
     if (!event) return res.status(404).json({ message: "Event not found" });
 
+    // prevent duplicate join
     if (event.participants.some((p) => p.toString() === String(userId))) {
-      return res.status(400).json({ message: "User already joined this event" });
+      return res
+        .status(400)
+        .json({ message: "User already joined this event" });
+    }
+
+    // if it's a driver event, reduce seat count
+    if (event.seatsAvailable !== undefined) {
+      if (event.seatsAvailable <= 0) {
+        return res.status(400).json({ message: "No seats available" });
+      }
+      event.seatsAvailable -= 1;
     }
 
     event.participants.push(userId);
@@ -113,7 +145,9 @@ router.post("/:id/join", authMiddleware, async (req, res) => {
     return res.json({ message: "Successfully joined event", event });
   } catch (error) {
     console.error("Error joining event:", error);
-    return res.status(500).json({ message: "Error joining event", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error joining event", error: error.message });
   }
 });
 
