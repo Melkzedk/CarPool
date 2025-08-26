@@ -1,31 +1,17 @@
+// backend/routes/event.js
 const express = require("express");
-const mongoose = require("mongoose");
 const router = express.Router();
-const Event = require("../models/Event");
-const User = require("../models/User");
-const authMiddleware = require("../middleware/auth");
+const Event = require("../models/Event"); // Import Event model
 
-// =======================
-// Create Event
-// =======================
-router.post("/", authMiddleware, async (req, res) => {
+// ✅ Create Event
+router.post("/", async (req, res) => {
   try {
-    const {
-      eventName,
-      eventDate,
-      time,
-      location,
-      description,
-      seatsAvailable,
-      estimatedCost,
-    } = req.body;
+    const { eventName, eventDate, time, location, description } = req.body;
 
-    // get logged-in user from JWT
-    const user = await User.findById(req.user.id).select(
-      "name phoneNumber role"
-    );
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (!eventName || !eventDate || !time || !location) {
+      return res
+        .status(400)
+        .json({ message: "All required fields must be filled" });
     }
 
     const newEvent = new Event({
@@ -34,120 +20,89 @@ router.post("/", authMiddleware, async (req, res) => {
       time,
       location,
       description,
-      ...(user.role === "driver" && { seatsAvailable }),
-      ...(user.role === "user" && { estimatedCost }),
-      createdBy: {
-        userId: user._id,
-        name: user.name,
-        phone: user.phoneNumber,
-      },
-      participants: [],
     });
 
-    const savedEvent = await newEvent.save();
-    return res.status(201).json(savedEvent);
+    await newEvent.save();
+    res.status(201).json(newEvent);
   } catch (error) {
-    console.error("Error creating event:", error);
-    return res
+    res
       .status(500)
-      .json({ message: "Error creating event", error: error.message });
+      .json({
+        message: "Server error while creating event",
+        error: error.message,
+      });
   }
 });
 
-// =======================
-// Get all events
-// =======================
-router.get("/", async (_req, res) => {
+// ✅ Get All Events
+router.get("/", async (req, res) => {
   try {
-    const events = await Event.find().sort({ createdAt: -1 });
-    return res.json(events);
+    const events = await Event.find().sort({ eventDate: 1 }); // sort by date
+    res.json(events);
   } catch (error) {
-    console.error("Error fetching events:", error);
-    return res
+    res
       .status(500)
-      .json({ message: "Error fetching events", error: error.message });
+      .json({
+        message: "Server error while fetching events",
+        error: error.message,
+      });
   }
 });
 
-// =======================
-// Get events created by a specific user
-// =======================
-router.get("/user/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const events = await Event.find({ "createdBy.userId": userId }).sort({
-      createdAt: -1,
-    });
-    return res.json(events);
-  } catch (error) {
-    console.error("Error fetching user events:", error);
-    return res
-      .status(500)
-      .json({ message: "Error fetching user events", error: error.message });
-  }
-});
-
-// =======================
-// Get a single event
-// =======================
+// ✅ Get Single Event by ID
 router.get("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid event id" });
-    }
-
-    const event = await Event.findById(id);
+    const event = await Event.findById(req.params.id);
     if (!event) return res.status(404).json({ message: "Event not found" });
-    return res.json(event);
+    res.json(event);
   } catch (error) {
-    console.error("Error fetching event:", error);
-    return res
+    res
       .status(500)
-      .json({ message: "Error fetching event", error: error.message });
+      .json({
+        message: "Server error while fetching event",
+        error: error.message,
+      });
   }
 });
 
-// =======================
-// Join Event
-// =======================
-router.post("/:id/join", authMiddleware, async (req, res) => {
+// ✅ Update Event
+router.put("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user.id;
+    const { eventName, eventDate, time, location, description } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid event id" });
-    }
+    const updatedEvent = await Event.findByIdAndUpdate(
+      req.params.id,
+      { eventName, eventDate, time, location, description },
+      { new: true, runValidators: true }
+    );
 
-    const event = await Event.findById(id);
-    if (!event) return res.status(404).json({ message: "Event not found" });
-
-    // prevent duplicate join
-    if (event.participants.some((p) => p.toString() === String(userId))) {
-      return res
-        .status(400)
-        .json({ message: "User already joined this event" });
-    }
-
-    // if it's a driver event, reduce seat count
-    if (event.seatsAvailable !== undefined) {
-      if (event.seatsAvailable <= 0) {
-        return res.status(400).json({ message: "No seats available" });
-      }
-      event.seatsAvailable -= 1;
-    }
-
-    event.participants.push(userId);
-    await event.save();
-
-    return res.json({ message: "Successfully joined event", event });
+    if (!updatedEvent)
+      return res.status(404).json({ message: "Event not found" });
+    res.json(updatedEvent);
   } catch (error) {
-    console.error("Error joining event:", error);
-    return res
+    res
       .status(500)
-      .json({ message: "Error joining event", error: error.message });
+      .json({
+        message: "Server error while updating event",
+        error: error.message,
+      });
+  }
+});
+
+// ✅ Delete Event
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+    if (!deletedEvent)
+      return res.status(404).json({ message: "Event not found" });
+    res.json({ message: "Event deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        message: "Server error while deleting event",
+        error: error.message,
+      });
   }
 });
 
