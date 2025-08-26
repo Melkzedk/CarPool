@@ -47,7 +47,9 @@ export default function CreateEvent() {
             phone: user.phone,
           },
         },
-        { headers: { Authorization: `Bearer ${token}` } } // ✅ FIXED
+        {
+          headers: { Authorization: `Bearer ${token}` }, // ✅ fixed here
+        }
       );
 
       alert("Event created!");

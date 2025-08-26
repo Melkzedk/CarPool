@@ -32,11 +32,15 @@ export default function EventsList() {
       ) : (
         <ul className="list-group">
           {events.map((event) => (
-            <li key={event._id} className="list-group-item d-flex justify-content-between align-items-center">
+            <li
+              key={event._id}
+              className="list-group-item d-flex justify-content-between align-items-center"
+            >
               <div>
                 <h5>{event.eventName}</h5>
                 <p className="mb-1">
-                  {new Date(event.eventDate).toLocaleDateString()} at {event.time} <br />
+                  {new Date(event.eventDate).toLocaleDateString()} at{" "}
+                  {event.time} <br />
                   {event.location}
                 </p>
                 <small className="text-muted">
