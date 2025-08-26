@@ -1,4 +1,4 @@
-// login.js
+// pages/Login.js
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -18,11 +18,11 @@ export default function Login() {
 
       const { token, user } = res.data;
 
-      // ✅ Ensure we only save what we need for event creation
+      // ✅ Save both token and user info
       const userData = {
         _id: user._id,
         name: user.name,
-        phone: user.phone || user.phoneNumber || "", // handle both cases
+        phone: user.phone || user.phoneNumber || "",
         role: user.role,
       };
 
@@ -31,7 +31,7 @@ export default function Login() {
       localStorage.setItem("role", userData.role);
 
       alert("Login successful!");
-      navigate("/create");
+      navigate("/events"); // or /create depending on your flow
     } catch (err) {
       alert(err.response?.data?.error || "Login failed");
     }

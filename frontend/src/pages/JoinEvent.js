@@ -1,4 +1,4 @@
-//pages/JoinEvent.js
+// pages/JoinEvent.js
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -16,7 +16,7 @@ export default function JoinEvent() {
     const fetchEvent = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/events/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }, // ✅ send token
+          headers: { Authorization: `Bearer ${token}` },
         });
         setEvent(res.data);
         setLoading(false);
@@ -40,7 +40,6 @@ export default function JoinEvent() {
     }
 
     try {
-      // ✅ no need to send userId, backend gets it from token
       await axios.post(
         `http://localhost:5000/api/events/${id}/join`,
         {},
@@ -53,7 +52,8 @@ export default function JoinEvent() {
     } catch (err) {
       console.error("Error joining event:", err.response?.data || err.message);
       alert(
-        err.response?.data?.msg || "Failed to join event. Please try again."
+        err.response?.data?.message ||
+          "Failed to join event. Please try again."
       );
     }
   };
@@ -70,8 +70,8 @@ export default function JoinEvent() {
     <div className="container mt-4">
       <h2>{event.eventName}</h2>
       <p>
-        <strong>Date:</strong> {new Date(event.eventDate).toLocaleDateString()}{" "}
-        <br />
+        <strong>Date:</strong>{" "}
+        {new Date(event.eventDate).toLocaleDateString()} <br />
         <strong>Location:</strong> {event.location}
       </p>
       <p>{event.description}</p>
@@ -81,8 +81,14 @@ export default function JoinEvent() {
         {event.createdBy?.userId || "N/A"})
       </p>
 
-      <button onClick={handleJoin} className="btn btn-custom">
-        Join Event
+      <button
+        onClick={handleJoin}
+        className="btn btn-custom"
+        disabled={event.seatsAvailable !== undefined && event.seatsAvailable <= 0}
+      >
+        {event.seatsAvailable !== undefined && event.seatsAvailable <= 0
+          ? "No Seats Available"
+          : "Join Event"}
       </button>
     </div>
   );

@@ -1,4 +1,4 @@
-//pages/CreateEvent.js
+// pages/CreateEvent.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -47,13 +47,13 @@ export default function CreateEvent() {
             phone: user.phone,
           },
         },
-        { headers: { "x-auth-token": token } }
+        { headers: { Authorization: `Bearer ${token}` } } // ✅ FIXED
       );
 
       alert("Event created!");
       navigate(`/join/${res.data._id}`);
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to create event");
+      alert(err.response?.data?.msg || "Failed to create event");
     }
   };
 
@@ -96,7 +96,6 @@ export default function CreateEvent() {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {/* 👇 Show fields based on role */}
         {userRole === "driver" && (
           <input
             type="number"
