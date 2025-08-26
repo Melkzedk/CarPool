@@ -7,7 +7,8 @@ const eventSchema = new mongoose.Schema(
     time: { type: String }, // HH:MM string
     location: { type: String, required: true },
     description: { type: String },
-    seatsAvailable: { type: Number },
+    seatsAvailable: { type: Number }, // for drivers
+    estimatedCost: { type: Number },  // for normal users
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
     createdBy: {

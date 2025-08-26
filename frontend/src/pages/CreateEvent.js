@@ -10,8 +10,9 @@ export default function CreateEvent() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [seatsAvailable, setSeatsAvailable] = useState("");
-  const [costShare, setCostShare] = useState(""); // ✅ new field
+  const [estimatedCost, setEstimatedCost] = useState("");
   const [userRole, setUserRole] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export default function CreateEvent() {
           location,
           description,
           ...(userRole === "driver" && { seatsAvailable }),
-          ...(userRole !== "driver" && { costShare }), // ✅ send costShare if not a driver
+          ...(userRole === "user" && { estimatedCost }),
           createdBy: {
             userId: user._id,
             name: user.name,
@@ -57,7 +58,7 @@ export default function CreateEvent() {
   };
 
   return (
-    <div className="container mt-4">
+    <div>
       <h2>Create Event</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -94,6 +95,8 @@ export default function CreateEvent() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        {/* 👇 Show fields based on role */}
         {userRole === "driver" && (
           <input
             type="number"
@@ -104,17 +107,19 @@ export default function CreateEvent() {
             required
           />
         )}
-        {userRole !== "driver" && (
+
+        {userRole === "user" && (
           <input
             type="number"
             className="form-control mb-2"
-            placeholder="Estimated Cost Share"
-            value={costShare}
-            onChange={(e) => setCostShare(e.target.value)}
+            placeholder="Estimated Cost (for cost sharing)"
+            value={estimatedCost}
+            onChange={(e) => setEstimatedCost(e.target.value)}
             required
           />
         )}
-        <button className="btn btn-primary w-100">Create</button>
+
+        <button className="btn btn-custom w-100">Create</button>
       </form>
     </div>
   );
