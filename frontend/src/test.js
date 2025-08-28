@@ -2,3 +2,5 @@
 
 console.log("This is a test file.");
 // You can add test cases here to verify functionality.
+
+console.log("Make sure to run this file to check for any errors or issues.");
