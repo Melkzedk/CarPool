@@ -17,7 +17,6 @@ router.post("/", authMiddleware, async (req, res) => {
       description,
       seatsAvailable,
       estimatedCost,
-      createdBy,
     } = req.body;
 
     if (!eventName || !eventDate || !time || !location) {
@@ -32,7 +31,7 @@ router.post("/", authMiddleware, async (req, res) => {
       description,
       seatsAvailable,
       estimatedCost,
-      createdBy,
+      createdBy: req.user._id, // ✅ auto-assign from logged-in user
       participants: [],
     });
 
@@ -81,11 +80,12 @@ router.post("/:id/join", authMiddleware, async (req, res) => {
       return res.status(404).json({ msg: "Event not found" });
     }
 
-    if (event.participants.includes(req.user.id)) {
+    // ✅ Use _id, not id
+    if (event.participants.includes(req.user._id)) {
       return res.status(400).json({ msg: "You already joined this event" });
     }
 
-    event.participants.push(req.user.id);
+    event.participants.push(req.user._id);
 
     // Reduce seats if applicable
     if (event.seatsAvailable !== undefined && event.seatsAvailable > 0) {
