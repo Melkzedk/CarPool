@@ -28,7 +28,6 @@ export default function CreateEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
 
     try {
       const res = await axios.post(
@@ -41,20 +40,16 @@ export default function CreateEvent() {
           description,
           ...(userRole === "driver" && { seatsAvailable }),
           ...(userRole === "user" && { estimatedCost }),
-          createdBy: {
-            userId: user._id,
-            name: user.name,
-            phone: user.phone,
-          },
         },
         {
-          headers: { Authorization: `Bearer ${token}` }, // ✅ fixed here
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       alert("Event created!");
       navigate(`/join/${res.data._id}`);
     } catch (err) {
+      console.error("Create event error:", err.response?.data || err.message);
       alert(err.response?.data?.msg || "Failed to create event");
     }
   };

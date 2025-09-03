@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Event = require("../models/Event");
+const User = require("../models/User");
 const authMiddleware = require("../middleware/auth");
 
 // @route   POST /api/events
@@ -23,6 +24,12 @@ router.post("/", authMiddleware, async (req, res) => {
       return res.status(400).json({ msg: "Please fill all required fields" });
     }
 
+    // ✅ Fetch user info to fill createdBy
+    const user = await User.findById(req.user._id).select("name phone");
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
     const newEvent = new Event({
       eventName,
       eventDate,
@@ -31,14 +38,18 @@ router.post("/", authMiddleware, async (req, res) => {
       description,
       seatsAvailable,
       estimatedCost,
-      createdBy: req.user._id, // ✅ auto-assign from logged-in user
+      createdBy: {
+        userId: user._id,
+        name: user.name,
+        phone: user.phone,
+      },
       participants: [],
     });
 
     const savedEvent = await newEvent.save();
     res.json(savedEvent);
   } catch (err) {
-    console.error(err.message);
+    console.error("Event creation error:", err.message);
     res.status(500).send("Server error");
   }
 });
@@ -80,14 +91,12 @@ router.post("/:id/join", authMiddleware, async (req, res) => {
       return res.status(404).json({ msg: "Event not found" });
     }
 
-    // ✅ Use _id, not id
     if (event.participants.includes(req.user._id)) {
       return res.status(400).json({ msg: "You already joined this event" });
     }
 
     event.participants.push(req.user._id);
 
-    // Reduce seats if applicable
     if (event.seatsAvailable !== undefined && event.seatsAvailable > 0) {
       event.seatsAvailable -= 1;
     }
