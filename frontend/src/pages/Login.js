@@ -18,11 +18,11 @@ export default function Login() {
 
       const { token, user } = res.data;
 
-      // ✅ Save both token and user info
+      // ✅ Save both token and user info with `_id`
       const userData = {
         _id: user._id,
         name: user.name,
-        phone: user.phone || user.phoneNumber || "",
+        phone: user.phoneNumber || "",
         role: user.role,
       };
 
@@ -31,7 +31,7 @@ export default function Login() {
       localStorage.setItem("role", userData.role);
 
       alert("Login successful!");
-      navigate("/events"); // or /create depending on your flow
+      navigate("/events");
     } catch (err) {
       alert(err.response?.data?.error || "Login failed");
     }
