@@ -22,26 +22,21 @@ router.post("/register", async (req, res) => {
       drivingLicenseNumber 
     } = req.body;
 
-    // Validate required fields
     if (!name || !phoneNumber || !email || !password || !role) {
       return res.status(400).json({ message: "Please fill all required fields" });
     }
 
-    // Extra checks for drivers
     if (role === "driver" && (!carModel || !licensePlate || !drivingLicenseNumber)) {
       return res.status(400).json({ message: "Please provide all driver details" });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
     const newUser = new User({
       name,
       phoneNumber,
@@ -53,9 +48,9 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
 
-    // Generate token
+    // ✅ Use `_id` in JWT payload
     const token = jwt.sign(
-      { id: newUser._id, name: newUser.name, role: newUser.role },
+      { _id: newUser._id, name: newUser.name, role: newUser.role },
       JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -64,7 +59,7 @@ router.post("/register", async (req, res) => {
       message: "User registered successfully",
       token,
       user: {
-        id: newUser._id,
+        _id: newUser._id,
         name: newUser.name,
         email: newUser.email,
         phoneNumber: newUser.phoneNumber,
@@ -104,8 +99,9 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
+    // ✅ Use `_id` in JWT payload
     const token = jwt.sign(
-      { id: user._id, name: user.name, role: user.role },
+      { _id: user._id, name: user.name, role: user.role },
       JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -114,7 +110,7 @@ router.post("/login", async (req, res) => {
       message: "Login successful",
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         phoneNumber: user.phoneNumber,
