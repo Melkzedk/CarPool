@@ -21,4 +21,34 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
+// @route   PUT /api/notifications/mark-read
+// @desc    Mark all notifications as read
+// @access  Private
+router.put("/mark-read", authMiddleware, async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { recipient: req.user._id, read: false },
+      { $set: { read: true } }
+    );
+
+    res.json({ msg: "All notifications marked as read" });
+  } catch (err) {
+    console.error("Error marking notifications as read:", err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   DELETE /api/notifications/clear
+// @desc    Clear all notifications
+// @access  Private
+router.delete("/clear", authMiddleware, async (req, res) => {
+  try {
+    await Notification.deleteMany({ recipient: req.user._id });
+    res.json({ msg: "All notifications cleared" });
+  } catch (err) {
+    console.error("Error clearing notifications:", err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;
