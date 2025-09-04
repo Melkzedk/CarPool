@@ -1,3 +1,4 @@
+// Profile.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -21,9 +22,22 @@ export default function Profile() {
   return (
     <div className="card shadow p-4">
       <h3 className="mb-3">My Profile</h3>
+
       <p><strong>Name:</strong> {user.name}</p>
       <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Phone:</strong> {user.phone}</p>
+      <p><strong>Phone:</strong> {user.phoneNumber}</p>
+      <p><strong>Role:</strong> {user.role}</p>
+
+      {/* Show driver details only if role is driver */}
+      {user.role === "driver" && (
+        <>
+          <hr />
+          <h5 className="mb-2">Driver Details</h5>
+          <p><strong>Car Model:</strong> {user.carModel}</p>
+          <p><strong>License Plate:</strong> {user.licensePlate}</p>
+          <p><strong>Driving License:</strong> {user.drivingLicenseNumber}</p>
+        </>
+      )}
     </div>
   );
 }
