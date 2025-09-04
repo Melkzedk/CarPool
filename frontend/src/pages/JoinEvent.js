@@ -87,7 +87,7 @@ export default function JoinEvent() {
         disabled={event.seatsAvailable !== undefined && event.seatsAvailable <= 0}
       >
         {event.seatsAvailable !== undefined && event.seatsAvailable <= 0
-          ? "No Seats Available"
+          ? "No Seat Available"
           : "Join Event"}
       </button>
     </div>
