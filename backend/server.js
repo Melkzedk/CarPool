@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -29,12 +28,14 @@ app.use((req, res, next) => {
 const eventRoutes = require('./routes/events');
 const authRoutes = require('./routes/auth');
 const ridesRoutes = require('./routes/rides');
-const notificationRoutes = require('./routes/notifications'); // ✅ Added
+const notificationRoutes = require('./routes/notifications');
+const userRoutes = require('./routes/user'); // ✅ Import user routes
 
 app.use('/api/events', eventRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/rides', ridesRoutes);
-app.use('/api/notifications', notificationRoutes); // ✅ Mounted notifications
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/users', userRoutes); // ✅ Changed to plural "users"
 
 // Global error handler
 app.use((err, req, res, next) => {
