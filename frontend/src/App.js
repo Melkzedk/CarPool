@@ -13,9 +13,10 @@ import JoinEvent from "./pages/JoinEvent";
 import RideRequests from "./pages/RideRequests";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import "bootstrap/dist/css/bootstrap.min.css";
 import EventsList from "./pages/EventsList";
-import Notifications from "./pages/Notifications"; // ✅ new notifications page
+import Notifications from "./pages/Notifications";
+import Profile from "./pages/Profile"; // ✅ new Profile page
+import "bootstrap/dist/css/bootstrap.min.css";
 import {
   FaPlusCircle,
   FaSignInAlt,
@@ -115,6 +116,15 @@ function App() {
                       )}
                     </Link>
                   </li>
+                  {/* ✅ Profile link */}
+                  <li className="nav-item">
+                    <Link
+                      className="btn btn-outline-light d-flex align-items-center gap-2"
+                      to="/profile"
+                    >
+                      <FaUserCircle /> Profile
+                    </Link>
+                  </li>
                   <li className="nav-item">
                     <button
                       onClick={handleLogout}
@@ -159,7 +169,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/events" element={<EventsList />} />
-          <Route path="/notifications" element={<Notifications />} /> {/* ✅ new route */}
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/profile" element={<Profile />} /> {/* ✅ new profile route */}
         </Routes>
       </div>
     </>
