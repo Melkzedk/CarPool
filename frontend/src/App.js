@@ -1,19 +1,50 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import Home from './pages/Home';
-import CreateEvent from './pages/CreateEvent';
-import JoinEvent from './pages/JoinEvent';
-import RideRequests from './pages/RideRequests';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import EventsList from './pages/EventsList';
-import { FaPlusCircle, FaSignInAlt, FaCarSide, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
+// App.js
+import React, { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import CreateEvent from "./pages/CreateEvent";
+import JoinEvent from "./pages/JoinEvent";
+import RideRequests from "./pages/RideRequests";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import "bootstrap/dist/css/bootstrap.min.css";
+import EventsList from "./pages/EventsList";
+import Notifications from "./pages/Notifications"; // ✅ new notifications page
+import {
+  FaPlusCircle,
+  FaSignInAlt,
+  FaCarSide,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaBell,
+} from "react-icons/fa";
+import axios from "axios";
 
 function App() {
   const navigate = useNavigate();
-
+  const [notifications, setNotifications] = useState([]);
   const isLoggedIn = !!localStorage.getItem("token");
+
+  // Fetch notifications on mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios
+        .get("http://localhost:5000/api/notifications", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => setNotifications(res.data))
+        .catch((err) =>
+          console.error("Error fetching notifications:", err)
+        );
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -47,19 +78,41 @@ function App() {
               {isLoggedIn ? (
                 <>
                   <li className="nav-item">
-                    <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/create">
+                    <Link
+                      className="btn btn-outline-light d-flex align-items-center gap-2"
+                      to="/create"
+                    >
                       <FaPlusCircle /> Create Ride
                     </Link>
                   </li>
                   <li className="nav-item">
-                    {/* 🔥 Changed to /events instead of /join */}
-                    <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/events">
+                    <Link
+                      className="btn btn-outline-light d-flex align-items-center gap-2"
+                      to="/events"
+                    >
                       <FaSignInAlt /> Join Ride
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/rides">
+                    <Link
+                      className="btn btn-outline-light d-flex align-items-center gap-2"
+                      to="/rides"
+                    >
                       <FaCarSide /> Ride Requests
+                    </Link>
+                  </li>
+                  {/* ✅ Notifications icon with badge */}
+                  <li className="nav-item position-relative">
+                    <Link
+                      className="btn btn-outline-light d-flex align-items-center gap-2"
+                      to="/notifications"
+                    >
+                      <FaBell /> Notifications
+                      {notifications.length > 0 && (
+                        <span className="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                          {notifications.length}
+                        </span>
+                      )}
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -74,12 +127,18 @@ function App() {
               ) : (
                 <>
                   <li className="nav-item">
-                    <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/login">
+                    <Link
+                      className="btn btn-outline-light d-flex align-items-center gap-2"
+                      to="/login"
+                    >
                       <FaUserCircle /> Login
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="btn btn-outline-light d-flex align-items-center gap-2" to="/register">
+                    <Link
+                      className="btn btn-outline-light d-flex align-items-center gap-2"
+                      to="/register"
+                    >
                       Register
                     </Link>
                   </li>
@@ -91,16 +150,16 @@ function App() {
       </nav>
 
       {/* Page Content */}
-      <div className="container" style={{ paddingTop: '80px' }}>
+      <div className="container" style={{ paddingTop: "80px" }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<CreateEvent />} />
-          {/* 🔥 Changed to use param :id */}
           <Route path="/join/:id" element={<JoinEvent />} />
           <Route path="/rides" element={<RideRequests />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/events" element={<EventsList />} />
+          <Route path="/notifications" element={<Notifications />} /> {/* ✅ new route */}
         </Routes>
       </div>
     </>
