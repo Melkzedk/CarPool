@@ -38,6 +38,34 @@ export default function Notifications() {
     fetchNotifications();
   };
 
+  const acceptRequest = async (eventId, userId) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(
+        `http://localhost:5000/api/events/${eventId}/accept`,
+        { userId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchNotifications();
+    } catch (err) {
+      console.error("Error accepting request:", err);
+    }
+  };
+
+  const declineRequest = async (eventId, userId) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(
+        `http://localhost:5000/api/events/${eventId}/decline`,
+        { userId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchNotifications();
+    } catch (err) {
+      console.error("Error declining request:", err);
+    }
+  };
+
   return (
     <div className="container mt-4">
       <h2>Notifications</h2>
@@ -64,6 +92,24 @@ export default function Notifications() {
               <small className="text-muted">
                 {new Date(n.createdAt).toLocaleString()}
               </small>
+
+              {/* ✅ Show Accept / Decline buttons only if this is a join request */}
+              {n.message.includes("requested to join") && (
+                <div className="mt-2">
+                  <button
+                    className="btn btn-sm btn-success me-2"
+                    onClick={() => acceptRequest(n.event._id, n.sender._id)}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={() => declineRequest(n.event._id, n.sender._id)}
+                  >
+                    Decline
+                  </button>
+                </div>
+              )}
             </li>
           ))}
         </ul>

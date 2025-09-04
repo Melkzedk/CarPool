@@ -45,6 +45,7 @@ router.post("/", authMiddleware, async (req, res) => {
         phone: user.phone,
       },
       participants: [],
+      pendingRequests: [], // ✅ new
     });
 
     const savedEvent = await newEvent.save();
@@ -83,7 +84,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // @route   POST /api/events/:id/join
-// @desc    Join an event + notify creator
+// @desc    Request to join an event (goes to pendingRequests)
 // @access  Private
 router.post("/:id/join", authMiddleware, async (req, res) => {
   try {
@@ -92,39 +93,39 @@ router.post("/:id/join", authMiddleware, async (req, res) => {
       return res.status(404).json({ msg: "Event not found" });
     }
 
-    if (event.participants.includes(req.user._id)) {
-      return res.status(400).json({ msg: "You already joined this event" });
+    // ✅ prevent duplicates
+    if (
+      event.pendingRequests.includes(req.user._id) ||
+      event.participants.includes(req.user._id)
+    ) {
+      return res.status(400).json({ msg: "You already requested or joined" });
     }
 
-    event.participants.push(req.user._id);
-
-    if (event.seatsAvailable !== undefined && event.seatsAvailable > 0) {
-      event.seatsAvailable -= 1;
-    }
-
+    // ✅ Add to pending requests
+    event.pendingRequests.push(req.user._id);
     await event.save();
 
-    // ✅ Fetch user who joined
+    // ✅ Fetch user who requested
     const user = await User.findById(req.user._id).select("name");
     if (user) {
       // ✅ Create notification for event creator
       const notification = new Notification({
         recipient: event.createdBy.userId, // creator's ID
-        sender: req.user._id, // joiner
+        sender: req.user._id, // requester
         event: event._id,
-        message: `${user.name} joined your event: ${event.eventName}`,
+        message: `${user.name} requested to join your event: ${event.eventName}`,
       });
       await notification.save();
     }
 
-    res.json({ msg: "Successfully joined the event and notification sent", event });
+    res.json({ msg: "Join request sent successfully", event });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
   }
 });
 
-// @route   GET /api/notifications
+// @route   GET /api/events/notifications
 // @desc    Get all notifications for logged-in user
 // @access  Private
 router.get("/notifications", authMiddleware, async (req, res) => {

@@ -1,5 +1,4 @@
 // backend/models/Event.js
-
 const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema(
@@ -10,14 +9,18 @@ const eventSchema = new mongoose.Schema(
     location: { type: String, required: true },
     description: { type: String },
     seatsAvailable: { type: Number }, // for drivers
-    estimatedCost: { type: Number },  // for normal users
+    estimatedCost: { type: Number }, // for normal users
+
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+
+    // ✅ New field for join requests
+    pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
     createdBy: {
       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
       name: { type: String, required: true },
-      phone: { type: String, required: false }
-    }
+      phone: { type: String, required: false },
+    },
   },
   { timestamps: true }
 );
