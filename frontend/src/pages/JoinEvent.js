@@ -10,7 +10,7 @@ export default function JoinEvent() {
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")); // assuming this contains _id or id
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -66,6 +66,8 @@ export default function JoinEvent() {
     return <p className="text-center mt-5">Event not found.</p>;
   }
 
+  const isCreator = user && event.createdBy?._id === user._id;
+
   return (
     <div className="container mt-4">
       <h2>{event.eventName}</h2>
@@ -81,15 +83,23 @@ export default function JoinEvent() {
         {event.createdBy?.userId || "N/A"})
       </p>
 
-      <button
-        onClick={handleJoin}
-        className="btn btn-custom"
-        disabled={event.seatsAvailable !== undefined && event.seatsAvailable <= 0}
-      >
-        {event.seatsAvailable !== undefined && event.seatsAvailable <= 0
-          ? "No Seats Available"
-          : "Join Event"}
-      </button>
+      {!isCreator && (
+        <button
+          onClick={handleJoin}
+          className="btn btn-custom"
+          disabled={
+            event.seatsAvailable !== undefined && event.seatsAvailable <= 0
+          }
+        >
+          {event.seatsAvailable !== undefined && event.seatsAvailable <= 0
+            ? "No Seats Available"
+            : "Join Event"}
+        </button>
+      )}
+
+      {isCreator && (
+        <p className="text-danger">You cannot join your own event.</p>
+      )}
     </div>
   );
 }
