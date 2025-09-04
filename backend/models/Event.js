@@ -10,7 +10,7 @@ const eventSchema = new mongoose.Schema(
     location: { type: String, required: true },
     description: { type: String },
     seatsAvailable: { type: Number }, // for drivers
-    estimatedCost: { type: Number },  // for normal users
+    estimatedCost: { type: Number },  // for normal user
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
     createdBy: {
