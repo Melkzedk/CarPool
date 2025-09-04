@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const Event = require("../models/Event");
 const User = require("../models/User");
+const Notification = require("../models/Notification"); // ✅ import notification model
 const authMiddleware = require("../middleware/auth");
 
 // @route   POST /api/events
@@ -82,7 +83,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // @route   POST /api/events/:id/join
-// @desc    Join an event
+// @desc    Join an event + notify creator
 // @access  Private
 router.post("/:id/join", authMiddleware, async (req, res) => {
   try {
@@ -103,9 +104,39 @@ router.post("/:id/join", authMiddleware, async (req, res) => {
 
     await event.save();
 
-    res.json({ msg: "Successfully joined the event", event });
+    // ✅ Fetch user who joined
+    const user = await User.findById(req.user._id).select("name");
+    if (user) {
+      // ✅ Create notification for event creator
+      const notification = new Notification({
+        recipient: event.createdBy.userId, // creator's ID
+        sender: req.user._id, // joiner
+        event: event._id,
+        message: `${user.name} joined your event: ${event.eventName}`,
+      });
+      await notification.save();
+    }
+
+    res.json({ msg: "Successfully joined the event and notification sent", event });
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   GET /api/notifications
+// @desc    Get all notifications for logged-in user
+// @access  Private
+router.get("/notifications", authMiddleware, async (req, res) => {
+  try {
+    const notifications = await Notification.find({ recipient: req.user._id })
+      .populate("sender", "name")
+      .populate("event", "eventName")
+      .sort({ createdAt: -1 });
+
+    res.json(notifications);
+  } catch (err) {
+    console.error("Error fetching notifications:", err.message);
     res.status(500).send("Server error");
   }
 });
