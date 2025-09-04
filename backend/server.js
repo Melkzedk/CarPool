@@ -28,11 +28,13 @@ app.use((req, res, next) => {
 // Routes
 const eventRoutes = require('./routes/events');
 const authRoutes = require('./routes/auth');
-const ridesRoutes = require('./routes/rides'); // ✅ Added rides route
+const ridesRoutes = require('./routes/rides');
+const notificationRoutes = require('./routes/notifications'); // ✅ Added
 
 app.use('/api/events', eventRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/rides', ridesRoutes); // ✅ Mounted rides route
+app.use('/api/rides', ridesRoutes);
+app.use('/api/notifications', notificationRoutes); // ✅ Mounted notifications
 
 // Global error handler
 app.use((err, req, res, next) => {
