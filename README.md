@@ -13,7 +13,7 @@ CarPool is a full-stack web application that helps users share rides to events, 
 - **Interactive Map for Ride Search**
 - **Role-based UI (Driver/User)**
 - **JWT Authentication**
-- **MongoDB Data Storages**
+- **MongoDB Data Storage**
 
 ---
 
