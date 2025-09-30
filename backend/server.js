@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('✅ MongoDB connected'))
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// Debug: log every incoming request
+// Debug: log every incoming requests
 app.use((req, res, next) => {
   console.log(`➡️  ${req.method} ${req.url}`, req.body);
   next();
