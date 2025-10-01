@@ -30,7 +30,7 @@ const eventRoutes = require('./routes/events');
 const authRoutes = require('./routes/auth');
 const ridesRoutes = require('./routes/rides');
 const notificationRoutes = require('./routes/notifications');
-const userRoutes = require('./routes/user'); // ✅ Import user routes
+const userRoutes = require('./routes/user'); // ✅ Import user route
 
 app.use('/api/events', eventRoutes);
 app.use('/api/auth', authRoutes);
