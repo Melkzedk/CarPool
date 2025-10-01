@@ -36,7 +36,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/rides', ridesRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/users', userRoutes); // ✅ Changed to plural "users"
+app.use('/api/users', userRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
