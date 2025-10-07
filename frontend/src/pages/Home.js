@@ -64,8 +64,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-          onChange={(e) => setLocation(e.target.value)}
-          required
-        />  
