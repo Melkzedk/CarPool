@@ -23,7 +23,7 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return <p className="text-center mt-5">Loading events...</p>;
+    return <p className="text-center mt-5">Loading events......</p>;
   }
 
   return (
