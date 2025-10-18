@@ -53,7 +53,7 @@ export default function Home() {
                     to={`/join/${event._id}`}
                     className="btn btn-primary btn-sm"
                   >
-                    Join Our Event
+                    Join  Event
                   </Link>
                 </div>
               </div>
