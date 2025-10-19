@@ -12,11 +12,7 @@
     //Test Test
     //Test Test
 
-    console.log("Testing complete.");
-    // You can add test cases here to verify functionality.
 
-    console.log("Make sure to run this file to check for any errors or issues.");
-    // Add more test cases as needed.
 
     console.log("End of test file.");
     console.log("Testing complete.");
