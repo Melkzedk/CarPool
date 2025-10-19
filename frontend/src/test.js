@@ -55,7 +55,4 @@
     console.log("Test");
     console.log("Test Test Test");
 
-     //You can add test cases here to verify functionality
-    console.log("Test Test");
-    console.log("Test");
-    console.log("Test Test Test");
+    
