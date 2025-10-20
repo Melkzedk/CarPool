@@ -30,7 +30,7 @@ const eventRoutes = require('./routes/events');
 const authRoutes = require('./routes/auth');
 const ridesRoutes = require('./routes/rides');
 const notificationRoutes = require('./routes/notifications');
-const userRoutes = require('./routes/user'); // ✅ Import user route
+const userRoutes = require('./routes/user');
 
 app.use('/api/events', eventRoutes);
 app.use('/api/auth', authRoutes);
@@ -39,7 +39,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 
 // Global error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {   
   console.error('🔥 Server error:', err.stack);
   res.status(500).json({ error: 'Server error' });
 });
