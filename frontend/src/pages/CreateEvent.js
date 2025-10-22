@@ -1,4 +1,4 @@
-// pages/CreateEvent.js
+//pages/CreateEvent.js module
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
