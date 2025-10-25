@@ -19,7 +19,6 @@ router.post("/", authMiddleware, async (req, res) => {
       description,
       seatsAvailable,
       estimatedCost,
-      locationCoordinates,
     } = req.body;
 
     if (!eventName || !eventDate || !time || !location) {
