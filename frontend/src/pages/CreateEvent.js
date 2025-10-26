@@ -115,7 +115,7 @@ export default function CreateEvent() {
           />
         )}
 
-        <button className="btn btn-custom w-100">Create Event</button>
+        <button className="btn btn-custom w-100">Create EVENT</button>
       </form>
     </div>
   );
