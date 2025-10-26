@@ -26,6 +26,6 @@ module.exports = function (req, res, next) {
     next();
   } catch (err) {
     console.error("JWT Verification Error:", err.message);
-    res.status(401).json({ msg: "Invaliddddd or expired token" });
+    res.status(401).json({ msg: "Invalid or expired token" });
   }
 };
