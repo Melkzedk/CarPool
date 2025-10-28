@@ -46,7 +46,7 @@ export default function CreateEvent() {
         }
       );
 
-      alert("Event created successful!");
+      alert("Event created!");
       navigate(`/join/${res.data._id}`);
     } catch (err) {
       console.error("Create event error:", err.response?.data || err.message);
