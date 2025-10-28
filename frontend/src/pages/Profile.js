@@ -17,7 +17,7 @@ export default function Profile() {
     }
   }, []);
 
-  if (!user) return <p>Loading profile...</p>;
+  if (!user) return <p>Loading profile....</p>;
 
   return (
     <div className="card shadow p-4">
