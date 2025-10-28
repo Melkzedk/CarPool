@@ -27,7 +27,7 @@ export default function Profile() {
       <p><strong>Email:</strong> {user.email}</p>
       <p><strong>Phone:</strong> {user.phoneNumber}</p>
       <p><strong>Role:</strong> {user.role}</p>
-      <p><strong>Designation</strong>{user.Designation}</p>
+      // <p><strong>Designation</strong>{user.Designation}</p>
 
       {/* Show driver details only if role is driver */}
       {user.role === "driver" && (
