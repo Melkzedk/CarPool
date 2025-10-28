@@ -97,7 +97,7 @@ export default function CreateEvent() {
           <input
             type="number"
             className="form-control mb-2"
-            placeholder="Seat Available"
+            placeholder="Seats Available"
             value={seatsAvailable}
             onChange={(e) => setSeatsAvailable(e.target.value)}
             required
