@@ -7,7 +7,7 @@ export default function Notifications() {
   const fetchNotifications = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get("http://localhost:5000/api/notifications", {
+      const res = await axios.get("http://localhost:50000/api/notifications", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNotifications(res.data);
