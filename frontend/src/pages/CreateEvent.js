@@ -108,7 +108,7 @@ export default function CreateEvent() {
           <input
             type="number"
             className="form-control mb-2"
-            placeholder="Estimated Cost (for cost sharing the ride)"
+            placeholder="Estimated Cost (for cost sharing)"
             value={estimatedCost}
             onChange={(e) => setEstimatedCost(e.target.value)}
             required
