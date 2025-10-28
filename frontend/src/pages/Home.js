@@ -45,7 +45,7 @@ export default function Home() {
                   </p>
                   {/* ✅ Show who created the event */}
                   <p className="text-muted">
-                    Created by:{" "}
+                    Created byy:{" "}
                     {event.createdBy?.name || "Unknown"} (
                     {event.createdBy?.userId || "N/A"})
                   </p>
