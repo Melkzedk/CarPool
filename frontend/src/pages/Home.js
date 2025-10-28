@@ -14,7 +14,7 @@ export default function Home() {
         setEvents(res.data);
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching events:", err);
+        console.error("Error fetching events!:", err);
         setLoading(false);
       }
     };
