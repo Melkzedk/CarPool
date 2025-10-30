@@ -12,7 +12,7 @@ export default function Notifications() {
       });
       setNotifications(res.data);
     } catch (err) {
-      console.error("Error!:", err);
+      console.error("Error!!!:", err);
     }
   };
 
