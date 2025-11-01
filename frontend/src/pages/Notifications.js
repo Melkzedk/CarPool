@@ -68,7 +68,7 @@ export default function Notifications() {
 
   return (
     <div className="container mt-4">
-      <h2>Notifications</h2>
+      <h2>Notification</h2>
 
       <div className="mb-3">
         <button className="btn btn-sm btn-outline-primary me-2" onClick={markAllAsRead}>
