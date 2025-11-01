@@ -106,7 +106,7 @@ export default function Notifications() {
                     className="btn btn-sm btn-danger"
                     onClick={() => declineRequest(n.event._id, n.sender._id)}
                   >
-                    Decline
+                    Decline!
                   </button>
                 </div>
               )}
