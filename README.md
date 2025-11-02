@@ -32,7 +32,10 @@ CarPool is a full-stack web application that helps users share rides to events, 
 <img width="1892" height="979" alt="Screenshot 2025-11-02 103557" src="https://github.com/user-attachments/assets/71d41999-1e17-49f9-8caf-fc84bd7378f7" />
 <img width="1906" height="1007" alt="Screenshot 2025-11-02 103645" src="https://github.com/user-attachments/assets/9d5c8408-6ba7-4e78-baa8-d4341ccf3351" />
 <img width="1911" height="1005" alt="Screenshot 2025-11-02 103704" src="https://github.com/user-attachments/assets/dbe46430-6401-452d-8720-4497c71d65fe" />
-
+<img width="1887" height="1011" alt="Screenshot 2025-11-02 103716" src="https://github.com/user-attachments/assets/0dd34bd2-b7b4-4220-bf98-084533b56072" />
+<img width="1917" height="949" alt="Screenshot 2025-11-02 103735" src="https://github.com/user-attachments/assets/769af4b1-d14c-422a-88f2-08c1bbea9206" />
+<img width="1894" height="992" alt="Screenshot 2025-11-02 103754" src="https://github.com/user-attachments/assets/bf55aa99-7e1f-4caf-85f1-b80108641a82" />
+<img width="1907" height="1015" alt="Screenshot 2025-11-02 103821" src="https://github.com/user-attachments/assets/3de16bdf-c295-401d-a7b8-9d3c6de5c2d6" />
 
 
 
