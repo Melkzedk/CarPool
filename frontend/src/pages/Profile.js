@@ -36,7 +36,7 @@ export default function Profile() {
           <h5 className="mb-2">Driver Details</h5>
           <p><strong>Car Model:</strong> {user.carModel}</p>
           <p><strong>License Plate!:</strong> {user.licensePlate}</p>
-          <p><strong>Driving License:</strong> {user.drivingLicenseNumber}</p>
+          <p><strong>Driving License!:</strong> {user.drivingLicenseNumber}</p>
         </>
       )}
     </div>
