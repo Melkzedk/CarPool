@@ -21,7 +21,7 @@ export default function Profile() {
 
   return (
     <div className="card shadow p-4">
-      <h3 className="mb-3">My Profile!</h3>
+      <h3 className="mb-3">My Profile</h3>
 
       <p><strong>Name:</strong> {user.name}</p>
       <p><strong>Email:</strong> {user.email}</p>
