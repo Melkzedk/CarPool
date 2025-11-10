@@ -30,7 +30,7 @@ export default function Profile() {
       /* <p><strong>Test</strong> {user.Test}</p> */
       {/* <p><strong>Designation</strong>{user.Designation}</p> */}
 
-      {/* Show driver details only if roles is driver */}
+      {/* Show driver details only if role is driver */}
       {user.role === "driver" && (
         <>
           <hr />
