@@ -7,7 +7,8 @@ const NotificationSchema = new mongoose.Schema(
     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     event: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
     message: { type: String, required: true },
-    read: { type: Boolean, default: false }, // ✅ new field
+    read: { type: Boolean, default: false },
+    timestamps: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
