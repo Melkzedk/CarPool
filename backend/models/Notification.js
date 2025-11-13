@@ -8,8 +8,6 @@ const NotificationSchema = new mongoose.Schema(
     event: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
     message: { type: String, required: true },
     read: { type: Boolean, default: false },
-    Age: {type: Number},
-    timestamps: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
