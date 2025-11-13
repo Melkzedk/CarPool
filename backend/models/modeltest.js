@@ -6,7 +6,8 @@ const ModelTestSchema = new mongoose.Schema(
     lastname: { type: String, required: true },
     isActive: { type: Boolean, default: true },
     age: { type: Number, required: true },
-    email: { type: String, required: true, unique: true }
+    email: { type: String, required: true, unique: true },
+    address: { type: String }
   },
   {
     timestamps: true
