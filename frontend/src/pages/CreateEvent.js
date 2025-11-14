@@ -20,7 +20,7 @@ export default function CreateEvent() {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
     if (!token) {
-      alert("You must be logged in to create an event!.");
+      alert("You must be logged in to create an event.");
       navigate("/login");
     }
     setUserRole(role);
