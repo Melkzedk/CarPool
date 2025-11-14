@@ -12,7 +12,6 @@ export default function CreateEvent() {
   const [seatsAvailable, setSeatsAvailable] = useState("");
   const [estimatedCost, setEstimatedCost] = useState("");
   const [userRole, setUserRole] = useState("");
-  const [test, setTest] = useState("");
 
   const navigate = useNavigate();
 
