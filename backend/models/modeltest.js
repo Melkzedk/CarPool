@@ -5,7 +5,6 @@ const ModelTestSchema = new mongoose.Schema(
     fullname: { type: String, required: true },
     lastname: { type: String, required: true },
     isActive: { type: Boolean, default: true },
-    test: {type: string},
     age: { type: Number, required: true },
     email: { type: String, required: true, unique: true },
     address: { type: String },
