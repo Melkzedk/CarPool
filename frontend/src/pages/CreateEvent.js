@@ -86,13 +86,6 @@ export default function CreateEvent() {
           onChange={(e) => setLocation(e.target.value)}
           required
         />
-        <input
-        className="form-control mb-2"
-        placeholder="Type Test here..."
-        value={test}
-        onChange={(e) => setTest(e.target.value)}
-        required
-      />
         <textarea
           className="form-control mb-2"
           placeholder="Description"
