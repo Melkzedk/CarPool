@@ -88,7 +88,7 @@ export default function CreateEvent() {
         />
         <input
         className="form-control mb-2"
-        placeholder="Type Test here..."
+        placeholder="Type Test here please..."
         value={test}
         onChange={(e) => setTest(e.target.value)}
         required
