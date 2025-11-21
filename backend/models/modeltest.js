@@ -1,4 +1,4 @@
-// backend/models/modeltest1.js
+// backend/models/modeltest.js
 
 const mongoose = require("mongoose");
 
