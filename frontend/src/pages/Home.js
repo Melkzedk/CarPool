@@ -31,7 +31,7 @@ export default function Home() {
       <h2 className="mb-3">All Events</h2>
       <div className="row">
         {events.length === 0 ? (
-          <p>No events available yet.</p>
+          <p>No events available.</p>
         ) : (
           events.map((event) => (
             <div className="col-md-4 mb-3" key={event._id}>
