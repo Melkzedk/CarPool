@@ -22,7 +22,7 @@ export default function EventsList() {
     fetchEvents();
   }, []);
 
-  if (loading) return <p className="text-center mt-5">Loading events...</p>;
+  if (loading) return <p className="text-center mt-5">Loading events....</p>;
 
   return (
     <div className="container mt-4">
