@@ -52,7 +52,7 @@ export default function EventsList() {
               </Link>
               // <link to={`/events/edit/${event._id}`} className="btn btn-secondary ms-2">
                 // Edit
-              // </link>
+              / </link>
             </li>
           ))}
         </ul>
