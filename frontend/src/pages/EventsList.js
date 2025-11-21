@@ -50,9 +50,9 @@ export default function EventsList() {
               <Link to={`/join/${event._id}`} className="btn btn-primary">
                 View & Join
               </Link>
-              <link to={`/events/edit/${event._id}`} className="btn btn-secondary ms-2">
-                Edit
-              </link>
+              // <link to={`/events/edit/${event._id}`} className="btn btn-secondary ms-2">
+                // Edit
+              // </link>
             </li>
           ))}
         </ul>
