@@ -28,7 +28,7 @@ export default function EventsList() {
     <div className="container mt-4">
       <h2>Available Events</h2>
       {events.length === 0 ? (
-        <p>No events available.!</p>
+        <p>No events available.</p>
       ) : (
         <ul className="list-group">
           {events.map((event) => (
