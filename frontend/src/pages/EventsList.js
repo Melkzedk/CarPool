@@ -48,7 +48,7 @@ export default function EventsList() {
                 </small>
               </div>
               <Link to={`/join/${event._id}`} className="btn btn-primary">
-                View & Join Here
+                View & Join
               </Link>
             </li>
           ))}
