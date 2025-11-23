@@ -26,7 +26,7 @@ export default function EventsList() {
 
   return (
     <div className="container mt-4">
-      <h2>Available Events</h2>
+      <h2>Available Events!</h2>
       {events.length === 0 ? (
         <p>No events available.</p>
       ) : (
