@@ -53,6 +53,9 @@ export default function EventsList() {
               <Link to={`/events/${event._id}`} className="btn btn-secondary ms-2">
                 Details
               </Link>
+              <Link to={`/events/edit/${event._id}`} className="btn btn-warning ms-2">
+                Edit
+              </Link>
             </li>
           ))}
         </ul>
