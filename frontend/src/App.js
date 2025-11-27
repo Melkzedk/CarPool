@@ -15,7 +15,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import EventsList from "./pages/EventsList";
 import Notifications from "./pages/Notifications";
-import Profile from "./pages/Profile"; // ✅ new Profile page
+import Profile from "./pages/Profile";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   FaPlusCircle,
