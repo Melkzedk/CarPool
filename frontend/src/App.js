@@ -59,7 +59,7 @@ function App() {
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
         <div className="container">
           <Link className="navbar-brand fw-bold text-uppercase" to="/">
-            🚗 Carpool
+            🚗 Carpool System
           </Link>
 
           <button
