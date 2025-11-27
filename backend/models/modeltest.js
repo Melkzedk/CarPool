@@ -9,7 +9,6 @@ const ModelTestSchema = new mongoose.Schema(
     emailVerified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     age: { type: Number, required: true },
-    test: { type: String },
     email: { type: String, required: true, unique: true },
     address: { type: String, required: true },
     phone: { type: String },
