@@ -11,7 +11,7 @@ const ModelTestSchema = new mongoose.Schema(
     age: { type: Number, required: true },
     test: { type: String },
     email: { type: String, required: true, unique: true },
-    address: { type: String },
+    address: { type: String, required: true },
     phone: { type: String },
     registeredAt: { type: Date, default: Date.now }
   },
