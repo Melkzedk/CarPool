@@ -43,7 +43,7 @@ CarPool is a full-stack web application that helps users share rides to events, 
 
 
 
-
+#All Rights Reserved
 
 
 
