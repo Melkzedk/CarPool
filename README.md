@@ -1,7 +1,6 @@
 #PROJECT LIVE LINK
 
 https://carpoolingsystem.netlify.app/
-https://carpoolingsystem.netlify.app/
 
 # CarPool Web App
 
