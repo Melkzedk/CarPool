@@ -9,8 +9,7 @@ CarPool is a full-stack web application that helps users share rides to events, 
 
 ---
 
-## Features
-
+## Feature
 - **User Registration & Login** (Normal users & Drivers)
 - **Event Creation & Joining**
 - **Ride Creation & Requests**
