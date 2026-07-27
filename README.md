@@ -3,7 +3,7 @@
 
 https://carpoolingsystem.netlify.app/
 
-# CarPool Web App1
+# CarPool Web App
 
 CarPool is a full-stack web application that helps users share rides to events, making travel cheaper, greener, and more social. The project consists of a Node.js/Express backend and a React frontend.
 
