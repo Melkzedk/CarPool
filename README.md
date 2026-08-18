@@ -1,6 +1,3 @@
-
-#Still Unfinished
-
 #PROJECT LIVE LINK
 
 
